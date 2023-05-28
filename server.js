@@ -40,5 +40,5 @@ runCronOnStartup()
 startPgListen()
 
 // start express server
-const PORT = process.env.runSalesOrders_PORT || 5039
+const PORT = process.env.runSalesOrders_PORT || 5041
 app.listen(PORT, () => console.log(`runSalesOrdersOnPrem running on port ${PORT} \n`))
