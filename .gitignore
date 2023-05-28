@@ -1,0 +1,5 @@
+node_modules
+files
+.DS_Store
+.env
+DEV_NOTES.md
