@@ -1,5 +1,5 @@
 const CronJob = require('cron').CronJob
-const generateSoData = require('../cron/generatSoData')
+const generateSoData = require('../cron/generateSoData')
 
 // define cron jobs
 const runGenerateSoData = new CronJob('*/15 * * * *', () => generateSoData(), null, false, 'America/New_York') // update every 10 minutes
