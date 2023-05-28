@@ -6,7 +6,7 @@ const getFlag = async flag_id => {
 
     console.log(`query postgres to GET ${flag_id} busy flag ...`)
 
-    const response = await pgClient.query('SELECT value FROM "purchaseReporting".flags WHERE id = $1', [flag_id])
+    const response = await pgClient.query('SELECT value FROM "salesReporting".flags WHERE id = $1', [flag_id])
 
     await pgClient.end()
 
@@ -26,7 +26,7 @@ const setFlag = async (flag_id, bool) => {
 
     console.log(`query postgres to SET ${flag_id} busy flag to ${bool} ...`)
 
-    await pgClient.query('UPDATE "purchaseReporting".flags SET value = $2 WHERE id = $1', [flag_id, bool])
+    await pgClient.query('UPDATE "salesReporting".flags SET value = $2 WHERE id = $1', [flag_id, bool])
 
     await pgClient.end()
 
@@ -42,12 +42,12 @@ const setAllFlagsFalse = async () => {
     const pgClient = new Client() // config from ENV
     await pgClient.connect()
 
-    const response = await pgClient.query('SELECT id FROM "purchaseReporting".flags')
+    const response = await pgClient.query('SELECT id FROM "salesReporting".flags')
 
     let promises = []
     for (flag of response.rows) {
       console.log(`query postgres to SET ${flag.id} to false ...`)
-      promises.push(pgClient.query('UPDATE "purchaseReporting".flags SET value = false WHERE id = $1', [flag.id]))
+      promises.push(pgClient.query('UPDATE "salesReporting".flags SET value = false WHERE id = $1', [flag.id]))
     }
     const pgResponse = await Promise.all(promises)
     let rowsUpdatedCount = 0
