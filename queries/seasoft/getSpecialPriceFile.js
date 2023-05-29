@@ -11,7 +11,7 @@ const getSpecialPriceFile = async () => {
 
     console.log(`query ODBC for special price file ...`)
 
-    const queryString = "SELECT {fn RTRIM(\"Special Price File\".CUSTOMER_CODE)} AS CUSTOMER_CODE, {fn RTRIM(\"Special Price File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Special Price File\".OTHER_PRICE_CODE)} AS OTHER_PRICE_CODE, \"Special Price File\".OTHER_PRICE, {fn RTRIM(\"Special Price File\".ITEM_ATTRIBUTES)} AS ITEM_ATTRIBUTES, \"Special Price File\".EFFECTIVE_DATE, \"Special Price File\".EXPIRATION_DATE, {fn RTRIM(\"Special Price File\".BROKER)} AS BROKER, {fn RTRIM(\"Special Price File\".SHIP_VIA_CODE)} AS SHIP_VIA_CODE, {fn RTRIM(\"Special Price File\".TRUCK_ROUTE)} AS TRUCK_ROUTE, {fn RTRIM(\"Special Price File\".FREIGHT_TYPE)} AS FREIGHT_TYPE, {fn RTRIM(\"Special Price File\".CARRIER_CODE)} AS CUSTOMER_CODE FROM 'Special Price File'" //prettier-ignore
+    const queryString = "SELECT {fn RTRIM(\"Special Price File\".CUSTOMER_CODE)} AS CUSTOMER_CODE, {fn RTRIM(\"Special Price File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Special Price File\".OTHER_PRICE_CODE)} AS OTHER_PRICE_CODE, \"Special Price File\".OTHER_PRICE, {fn RTRIM(\"Special Price File\".ITEM_ATTRIBUTES)} AS ITEM_ATTRIBUTES, \"Special Price File\".EFFECTIVE_DATE, \"Special Price File\".EXPIRATION_DATE, {fn RTRIM(\"Special Price File\".BROKER)} AS BROKER, {fn RTRIM(\"Special Price File\".SHIP_VIA_CODE)} AS SHIP_VIA_CODE, {fn RTRIM(\"Special Price File\".TRUCK_ROUTE)} AS TRUCK_ROUTE, {fn RTRIM(\"Special Price File\".FREIGHT_TYPE)} AS FREIGHT_TYPE, {fn RTRIM(\"Special Price File\".CARRIER_CODE)} AS CARRIER_CODE FROM 'Special Price File'" //prettier-ignore
 
     const response = await odbcConn.query(queryString)
 
