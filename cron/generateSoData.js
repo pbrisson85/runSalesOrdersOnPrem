@@ -2,6 +2,7 @@ const getSalesOrderlines = require('../queries/seasoft/getSalesOrderLines')
 const getSalesOrderHeader = require('../queries/seasoft/getSalesOrderHeader')
 const getCustomerMaster = require('../queries/seasoft/getCustomerMasterFile')
 const getSpecialPriceFile = require('../queries/seasoft/getSpecialPriceFile')
+const getShipToFile = require('../queries/seasoft/getShipToFile')
 const logEvent = require('../queries/postgres/logging')
 
 const generateSoData = async () => {
@@ -13,6 +14,7 @@ const generateSoData = async () => {
     const salesOrderHeader = await getSalesOrderHeader()
     const specialPriceFile = await getSpecialPriceFile()
     const customerMaster = await getCustomerMaster()
+    const shipToFile = await getShipToFile()
 
     // Model Data
 
@@ -21,7 +23,7 @@ const generateSoData = async () => {
     // Save to DB
 
     console.log('cron routine complete \n')
-    return { msg: 'success', payload: { customerMaster, specialPriceFile, salesOrderHeader, salesOrderLines } }
+    return { msg: 'success', payload: { shipToFile, customerMaster, specialPriceFile, salesOrderHeader, salesOrderLines } }
   } catch (error) {
     await logEvent({
       event_type: 'error',

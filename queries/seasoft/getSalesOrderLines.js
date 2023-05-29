@@ -19,6 +19,8 @@ const getSalesOrderlines = async () => {
 
     return response
   } catch (error) {
+    console.error(error)
+
     setFlag('odbcErrorState', true) // set flag to prevent further requests
 
     await logEvent({
