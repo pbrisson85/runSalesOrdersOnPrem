@@ -17,6 +17,13 @@ const startPgListen = require('./startup/pgNotifications')
 process.on('uncaughtException', async ex => {
   const { setAllFlagsFalse } = require('./queries/postgres/flags')
   await setAllFlagsFalse()
+  require('./queries/postgres/logging')({
+    event_type: 'error',
+    funct: 'uncaughtException',
+    reason: ex.message,
+    note: 'uncaughtException error - exiting app',
+  })
+
   console.error(ex)
   console.log('exiting app')
   process.exit(1)
@@ -25,6 +32,14 @@ process.on('uncaughtException', async ex => {
 process.on('unhandledRejection', async ex => {
   const { setAllFlagsFalse } = require('./queries/postgres/flags')
   await setAllFlagsFalse()
+
+  require('./queries/postgres/logging')({
+    event_type: 'error',
+    funct: 'unhandledRejection',
+    reason: ex.message,
+    note: 'unhandledRejection error - exiting app',
+  })
+
   console.error(ex)
   console.log('exiting app')
   process.exit(1)
@@ -33,7 +48,7 @@ process.on('unhandledRejection', async ex => {
 // routes
 app.use(helmet())
 app.use(express.json())
-app.use('/api/salesOrders/generateSalesOrders', generateSalesOrders)
+app.use('/api/salesOrders/generate', generateSalesOrders)
 
 // startup
 runCronOnStartup()
