@@ -4,8 +4,8 @@ const modelCatchWeights = catchWeightLines => {
   catchWeightLines.forEach((cwLine, ix) => {
     // also pass in the tagged so lines and find the line#, item#, lot# (note cant do this without doing a query on the lot # to the inventory loc file)
 
-    const taggedArray = cwLine.tagged_array.split(/\s+/)
-    const locArray = cwLine.location_array.split(/\s+/)
+    const taggedArray = cwLine.tagged_array.split(/[\s\uFEFF\xA0]+/)
+    const locArray = cwLine.location_array.split(/[\s\uFEFF\xA0]+/)
     const numberOfLots = taggedArray.length / 3
 
     console.log('cwLine', cwLine)
