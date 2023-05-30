@@ -30,6 +30,8 @@ const modelCatchWeights = catchWeightLines => {
   return modeled
 }
 
+module.exports = modelCatchWeights
+
 /*
 catchWeightLines: [
         {
