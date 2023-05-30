@@ -22,9 +22,8 @@ const modelCatchWeights = catchWeightLines => {
         },
       }
     }
-
-    console.log('next for each')
   })
+  console.log('exiting modelCatchWeights...')
   console.log('clean:', clean)
   return clean
 }
