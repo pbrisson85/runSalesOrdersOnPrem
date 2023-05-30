@@ -7,7 +7,7 @@ const logEvent = require('../queries/postgres/logging')
 const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const joinData = require('../models/joinData')
 const getCatchWeightLines = require('../queries/seasoft/getCatchWeightLines')
-const modelCatchWeightLines = require('../models/modelCatchWeightLines')
+const modelCatchWeights = require('../models/modelCatchWeights')
 
 const generateSoData = async () => {
   try {
@@ -28,7 +28,7 @@ const generateSoData = async () => {
       1: 'DOCUMENT_NUMBER',
     })
 
-    const catchWeightLinesModeled = modelCatchWeightLines(catchWeightLines)
+    const catchWeightLinesModeled = modelCatchWeights(catchWeightLines)
 
     // Map Data
     const data = joinData(salesOrderLines, salesOrderHeader_unflat)
