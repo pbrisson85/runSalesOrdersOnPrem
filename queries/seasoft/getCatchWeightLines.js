@@ -14,7 +14,9 @@ const getCatchWeightLines = async orders => {
     let responses = []
 
     for (eachOrderLine of orders) {
-      const { ORDER_NUMBER, LOCATION } = eachOrderLine
+      const { ORDER_NUMBER, LOCATION, TAGGED_WEIGHT } = eachOrderLine
+      if (TAGGED_WEIGHT === 0) continue
+
       const loc_search = `%${LOCATION}%`
 
       const queryString = "SELECT {fn RTRIM(\"Catch Weight Lines\".DOCUMENT_LINE_KEY)} AS so_num, {fn RTRIM(\"Catch Weight Lines\".WEIGHT_REC)} AS tagged_array, \"Catch Weight Lines\".QTY_COMMITTED AS qty_committed, {fn RTRIM(\"Catch Weight Lines\".LOCATION_REC)} AS location_array FROM 'Catch Weight Lines' WHERE \"Catch Weight Lines\".DOCUMENT_LINE_KEY = ? and LOCATION_REC LIKE ?" //prettier-ignore
@@ -34,7 +36,7 @@ const getCatchWeightLines = async orders => {
 
     await logEvent({
       event_type: 'error',
-      funct: 'getCustomerMasterFile',
+      funct: 'getCatchWeightLines',
       reason: error.message,
       note: 'flip odbcErrorState flag',
     })

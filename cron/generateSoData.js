@@ -6,6 +6,7 @@ const getShipToFile = require('../queries/seasoft/getShipToFile')
 const logEvent = require('../queries/postgres/logging')
 const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const joinData = require('../models/joinData')
+const getCatchWeightLines = require('../queries/seasoft/getCatchWeightLines')
 
 const generateSoData = async () => {
   try {
@@ -17,6 +18,7 @@ const generateSoData = async () => {
     const specialPriceFile = await getSpecialPriceFile()
     const customerMaster = await getCustomerMaster()
     const shipToFile = await getShipToFile()
+    const catchWeightLines = await getCatchWeightLines(salesOrderLines)
 
     // THE DIFFICULT PART WILL BE MANUALLY CALCING THE OTHP.
 
@@ -31,7 +33,7 @@ const generateSoData = async () => {
     // Save to DB
 
     console.log('cron routine complete \n')
-    return { msg: 'success', data }
+    return { msg: 'success', catchWeightLines }
   } catch (error) {
     await logEvent({
       event_type: 'error',
