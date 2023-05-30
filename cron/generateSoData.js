@@ -7,6 +7,7 @@ const logEvent = require('../queries/postgres/logging')
 const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const joinData = require('../models/joinData')
 const getCatchWeightLines = require('../queries/seasoft/getCatchWeightLines')
+const modelCatchWeightLines = require('../models/modelCatchWeightLines')
 
 const generateSoData = async () => {
   try {
@@ -27,13 +28,15 @@ const generateSoData = async () => {
       1: 'DOCUMENT_NUMBER',
     })
 
+    const catchWeightLinesModeled = modelCatchWeightLines(catchWeightLines)
+
     // Map Data
     const data = joinData(salesOrderLines, salesOrderHeader_unflat)
 
     // Save to DB
 
     console.log('cron routine complete \n')
-    return { msg: 'success', catchWeightLines }
+    return { msg: 'success', catchWeightLinesModeled }
   } catch (error) {
     await logEvent({
       event_type: 'error',
