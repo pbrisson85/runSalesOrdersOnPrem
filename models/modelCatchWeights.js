@@ -8,6 +8,11 @@ const modelCatchWeights = catchWeightLines => {
     const locArray = cwLine.location_array.split(/\s+/)
     const numberOfLots = taggedArray.length / 3
 
+    console.log('cwLine', cwLine)
+    console.log('taggedArray', taggedArray)
+    console.log('locArray', locArray)
+    console.log('numberOfLots', numberOfLots)
+
     let lotData = {}
     for (let i = 0; i < numberOfLots; i++) {
       const uuid = `${ix}-${i}`
@@ -24,9 +29,11 @@ const modelCatchWeights = catchWeightLines => {
       }
     }
 
+    console.log('lotData', lotData)
     modeled.push(lotData)
   })
 
+  console.log('modeled', modeled)
   return modeled
 }
 
