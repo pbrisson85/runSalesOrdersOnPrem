@@ -29,6 +29,7 @@ const generateSoData = async () => {
     })
 
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines)
+    console.log(catchWeightLinesModeled)
 
     // Map Data
     const data = joinData(salesOrderLines, salesOrderHeader_unflat)
