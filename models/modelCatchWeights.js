@@ -1,5 +1,5 @@
 const modelCatchWeights = catchWeightLines => {
-  let modeled = []
+  let modeled = {}
 
   catchWeightLines.forEach((cwLine, ix) => {
     const taggedArray = cwLine.tagged_array.trim().split(/[\s\uFEFF\xA0]+/)
@@ -22,12 +22,9 @@ const modelCatchWeights = catchWeightLines => {
       }
     }
 
-    modeled.push(lotData)
+    modeled = { ...modeled, ...lotData }
   })
 
-  console.log('lotData', lotData)
-
-  console.log('modeled', modeled)
   return modeled
 }
 
