@@ -1,7 +1,7 @@
 const modelCatchWeights = catchWeightLines => {
   console.log('entering modelCatchWeights...')
 
-  let modeled = {}
+  let clean = {}
 
   catchWeightLines.forEach((cwLine, ix) => {
     const taggedArray = cwLine.tagged_array.trim().split(/[\s\uFEFF\xA0]+/)
@@ -11,8 +11,8 @@ const modelCatchWeights = catchWeightLines => {
     for (let i = 0; i < numberOfLots; i++) {
       const uuid = `${ix}-${i}`
 
-      modeled = {
-        ...modeled,
+      clean = {
+        ...clean,
         [uuid]: {
           so_num: cwLine.so_num,
           lot: taggedArray[i * 3],
@@ -23,11 +23,10 @@ const modelCatchWeights = catchWeightLines => {
       }
     }
 
-    console.log('modeled:', modeled)
     console.log('next for each')
   })
-
-  return modeled
+  console.log('clean:', clean)
+  return clean
 }
 
 module.exports = modelCatchWeights
