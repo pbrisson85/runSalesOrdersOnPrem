@@ -6,12 +6,11 @@ const modelCatchWeights = catchWeightLines => {
     const locArray = cwLine.location_array.trim().split(/[\s\uFEFF\xA0]+/)
     const numberOfLots = taggedArray.length / 3
 
-    let lotData = {}
     for (let i = 0; i < numberOfLots; i++) {
       const uuid = `${ix}-${i}`
 
-      lotData = {
-        ...lotData,
+      modeled = {
+        ...modeled,
         [uuid]: {
           so_num: cwLine.so_num,
           lot: taggedArray[i * 3],
@@ -21,8 +20,6 @@ const modelCatchWeights = catchWeightLines => {
         },
       }
     }
-
-    modeled = { ...modeled, ...lotData }
   })
 
   return modeled
