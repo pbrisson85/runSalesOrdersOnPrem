@@ -23,6 +23,8 @@ const getCatchWeightLines = async orders => {
 
       const response = await odbcConn.query(queryString, [ORDER_NUMBER, loc_search])
 
+      if (typeof response[0] === 'undefined') console.log('Order Line Has no Catch Weight Line?: ', eachOrderLine)
+
       responses.push(response[0])
     }
 

@@ -29,8 +29,6 @@ const generateSoData = async source => {
     })
 
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines)
-    console.log('test print')
-    console.log('catchWeightLinesModeled:', catchWeightLinesModeled)
 
     // Map Data
     const data = joinData(salesOrderLines, salesOrderHeader_unflat)
@@ -38,7 +36,7 @@ const generateSoData = async source => {
     // Save to DB
 
     console.log('cron routine complete \n')
-    return { msg: 'success', catchWeightLinesModeled }
+    return { msg: 'success', catchWeightLines, catchWeightLinesModeled }
   } catch (error) {
     console.error(error)
 

@@ -5,7 +5,7 @@ const modelCatchWeights = catchWeightLines => {
     let clean = {}
 
     catchWeightLines.forEach((cwLine, ix) => {
-      if (typeof cwLine === 'undefined') return console.log('cwLine is undefined', cwLine, ix)
+      if (typeof cwLine === 'undefined') return
 
       const taggedArray = cwLine.tagged_array.trim().split(/[\s\uFEFF\xA0]+/)
       const locArray = cwLine.location_array.trim().split(/[\s\uFEFF\xA0]+/)
@@ -26,8 +26,7 @@ const modelCatchWeights = catchWeightLines => {
         }
       }
     })
-    console.log('exiting modelCatchWeights...')
-    console.log('clean:', clean)
+
     return clean
   } catch (error) {
     console.error(error)
