@@ -40,6 +40,8 @@ const generateSoData = async source => {
     console.log('cron routine complete \n')
     return { msg: 'success', catchWeightLinesModeled }
   } catch (error) {
+    console.error(error)
+
     await logEvent({
       event_type: 'error',
       funct: 'generateSoData',

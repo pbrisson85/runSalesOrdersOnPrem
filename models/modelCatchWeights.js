@@ -1,31 +1,35 @@
 const modelCatchWeights = catchWeightLines => {
-  console.log('entering modelCatchWeights...')
+  try {
+    console.log('entering modelCatchWeights...')
 
-  let clean = {}
+    let clean = {}
 
-  catchWeightLines.forEach((cwLine, ix) => {
-    const taggedArray = cwLine.tagged_array.trim().split(/[\s\uFEFF\xA0]+/)
-    const locArray = cwLine.location_array.trim().split(/[\s\uFEFF\xA0]+/)
-    const numberOfLots = taggedArray.length / 3
+    catchWeightLines.forEach((cwLine, ix) => {
+      const taggedArray = cwLine.tagged_array.trim().split(/[\s\uFEFF\xA0]+/)
+      const locArray = cwLine.location_array.trim().split(/[\s\uFEFF\xA0]+/)
+      const numberOfLots = taggedArray.length / 3
 
-    for (let i = 0; i < numberOfLots; i++) {
-      const uuid = `${ix}-${i}`
+      for (let i = 0; i < numberOfLots; i++) {
+        const uuid = `${ix}-${i}`
 
-      clean = {
-        ...clean,
-        [uuid]: {
-          so_num: cwLine.so_num,
-          lot: taggedArray[i * 3],
-          qty: taggedArray[i * 3 + 1],
-          weight: taggedArray[i * 3 + 2],
-          location: locArray[i],
-        },
+        clean = {
+          ...clean,
+          [uuid]: {
+            so_num: cwLine.so_num,
+            lot: taggedArray[i * 3],
+            qty: taggedArray[i * 3 + 1],
+            weight: taggedArray[i * 3 + 2],
+            location: locArray[i],
+          },
+        }
       }
-    }
-  })
-  console.log('exiting modelCatchWeights...')
-  console.log('clean:', clean)
-  return clean
+    })
+    console.log('exiting modelCatchWeights...')
+    console.log('clean:', clean)
+    return clean
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 module.exports = modelCatchWeights
