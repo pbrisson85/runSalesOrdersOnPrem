@@ -29,6 +29,7 @@ const generateSoData = async () => {
     })
 
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines)
+    console.log('test print')
     console.log('catchWeightLinesModeled:', catchWeightLinesModeled)
 
     // Map Data

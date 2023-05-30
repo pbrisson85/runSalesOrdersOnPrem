@@ -1,4 +1,6 @@
 const modelCatchWeights = catchWeightLines => {
+  console.log('entering modelCatchWeights...')
+
   let modeled = {}
 
   catchWeightLines.forEach((cwLine, ix) => {
@@ -20,6 +22,9 @@ const modelCatchWeights = catchWeightLines => {
         },
       }
     }
+
+    console.log('modeled:', modeled)
+    console.log('next for each')
   })
 
   return modeled
