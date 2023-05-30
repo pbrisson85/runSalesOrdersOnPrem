@@ -9,9 +9,9 @@ const joinData = require('../models/joinData')
 const getCatchWeightLines = require('../queries/seasoft/getCatchWeightLines')
 const modelCatchWeights = require('../models/modelCatchWeights')
 
-const generateSoData = async () => {
+const generateSoData = async source => {
   try {
-    console.log('hit the generate sales order data function via cron...')
+    console.log(`hit the generate sales order data function via ${source}...`)
 
     // Query data
     const salesOrderLines = await getSalesOrderlines()
