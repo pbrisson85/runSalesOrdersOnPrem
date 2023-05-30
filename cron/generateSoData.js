@@ -21,7 +21,6 @@ const generateSoData = async () => {
     // THE DIFFICULT PART WILL BE MANUALLY CALCING THE OTHP.
 
     // Model Data
-
     const salesOrderHeader_unflat = unflattenByCompositKey(salesOrderHeader, {
       1: 'DOCUMENT_NUMBER',
     })
