@@ -18,10 +18,10 @@ const modelCatchWeights = catchWeightLines => {
           ...clean,
           [uuid]: {
             so_num: cwLine.so_num,
-            lot: taggedArray[i * 3],
-            qty: taggedArray[i * 3 + 1],
-            weight: taggedArray[i * 3 + 2],
-            location: locArray[i],
+            qty: taggedArray[i * 3],
+            lbs: taggedArray[i * 3 + 1],
+            lot: taggedArray[i * 3 + 2],
+            loc: locArray[i],
           },
         }
       }
@@ -36,6 +36,8 @@ const modelCatchWeights = catchWeightLines => {
 module.exports = modelCatchWeights
 
 /*
+modelCatchWeights FUNCTION FLATTENS THE CATCH WEIGHT LINES
+
 catchWeightLines: [
         {
             "so_num": "367851",
@@ -44,5 +46,28 @@ catchWeightLines: [
             "location_array": "00SBFRD   00SBFRD   "
         },
     ]
+
+"catchWeightLinesModeled": {
+        "0-0": {
+            "so_num": "367851",
+            "qty": "2,466.00",
+            "lbs": "29,592.00",
+            "lot": "B10142",
+            "loc": "00SBFRD"
+        },
+        "0-1": {
+            "so_num": "367851",
+            "qty": "34.00",
+            "lbs": "408.00",
+            "lot": "B10143",
+            "loc": "00SBFRD"
+        },
+        "1-0": {
+            "so_num": "368453",
+            "qty": "1000.000",
+            "lbs": "22046.000",
+            "lot": "B09792",
+            "loc": "00SBFRD"
+        },
  
 */
