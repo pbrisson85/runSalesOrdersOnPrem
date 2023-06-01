@@ -14,15 +14,12 @@ const modelCatchWeights = catchWeightLines => {
       for (let i = 0; i < numberOfLots; i++) {
         const uuid = `${ix}-${i}`
 
-        clean = {
-          ...clean,
-          [uuid]: {
-            so_num: cwLine.so_num,
-            qty: taggedArray[i * 3],
-            lbs: taggedArray[i * 3 + 1],
-            lot: taggedArray[i * 3 + 2],
-            loc: locArray[i],
-          },
+        clean[uuid] = {
+          so_num: cwLine.so_num,
+          qty: taggedArray[i * 3],
+          lbs: taggedArray[i * 3 + 1],
+          lot: taggedArray[i * 3 + 2],
+          loc: locArray[i],
         }
       }
     })
