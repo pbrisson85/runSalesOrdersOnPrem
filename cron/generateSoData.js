@@ -51,7 +51,7 @@ const generateSoData = async source => {
     // Save to DB
 
     console.log('cron routine complete \n')
-    return { msg: 'success', taggedInventory_unflat }
+    return { msg: 'success', taggedInventory_unflat, catchWeightLinesModeled }
   } catch (error) {
     console.error(error)
 
