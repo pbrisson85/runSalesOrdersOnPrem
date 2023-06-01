@@ -11,7 +11,7 @@ const getNonLotCostedItems = async (req, res) => {
 
     console.log(`query ODBC for special price file ...`)
 
-    const queryString = "SELECT {fn RTRIM(\"Customer Master File\".ITEM_NUMBER)} AS ITEM_NUMBER FROM 'Inventory Master File' WHERE NOT (\"Customer Master File\".LOT_CONTROL_ITEM = 'Y' AND \"Customer Master File\".USE_LOT_COST = 'Y')" //prettier-ignore
+    const queryString = "SELECT {fn RTRIM(\"Inventory Master File\".ITEM_NUMBER)} AS ITEM_NUMBER FROM 'Inventory Master File' WHERE NOT (\"Inventory Master File\".LOT_CONTROL_ITEM = 'Y' AND \"Inventory Master File\".USE_LOT_COST = 'Y')" //prettier-ignore
 
     const response = await odbcConn.query(queryString)
 
