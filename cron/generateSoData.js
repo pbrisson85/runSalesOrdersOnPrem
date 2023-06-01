@@ -11,6 +11,7 @@ const getInventoryLocationFile = require('../queries/seasoft/getInventoryLocatio
 const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const modelCatchWeights = require('../models/modelCatchWeights')
 const joinData = require('../models/joinData')
+const assignCatchWeightLine = require('../models/assignCatchWeightLine')
 
 const generateSoData = async source => {
   // build this out so that all sales order data is accessible through postgres (sales order table and an OTHP table for the sales order lines)
@@ -18,26 +19,33 @@ const generateSoData = async source => {
   try {
     console.log(`hit the generate sales order data function via ${source}...`)
 
+    // Pull a SO line, determine if tagged or not. If tagged, need to know how many lines are tagged and what ordered number of tagged lines you are working with BECAUSE that is the only way to match up to the lot from the catch weight table. They are the same "tagged line number"
+
     // Query data
-    const salesOrderLines = await getSalesOrderlines()
     const salesOrderHeader = await getSalesOrderHeader()
     const specialPriceFile = await getSpecialPriceFile()
     const customerMaster = await getCustomerMaster()
     const shipToFile = await getShipToFile()
-    const catchWeightLines = await getCatchWeightLines(salesOrderLines)
-    const nonLotCostedItems = await getNonLotCostedItems() // to test against billed_weight = 0 because if item is not lot costed then the billed weight will not be 0 ever.
+    let nonLotCostedItems = await getNonLotCostedItems() // if item is not lot costed then weight will be in the billed weight (tagged weight) col.
+    nonLotCostedItems = nonLotCostedItems.map(item => item.ITEM_NUMBER)
+    let salesOrderLines = await getSalesOrderlines()
 
-    // THE DIFFICULT PART WILL BE MANUALLY CALCING THE OTHP.
+    // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
+    salesOrderLines = assignCatchWeightLine(salesOrderLines, nonLotCostedItems)
+    const catchWeightLines = await getCatchWeightLines(salesOrderLines) // adds sales order line number by using the tagged line number
 
     // Model Data
-    const mappedNonLotCostedItems = nonLotCostedItems.map(item => item.ITEM_NUMBER)
     const salesOrderHeader_unflat = unflattenByCompositKey(salesOrderHeader, {
       1: 'DOCUMENT_NUMBER',
+    })
+    const salesOrderLines_unflat = unflattenByCompositKey(salesOrderLines, {
+      1: 'ORDER_NUMBER',
+      2: 'LINE_NUMBER',
     })
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines)
 
     // Use catch weight lines lot and location to find array of possible items:
-    const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled)
+    const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled, salesOrderLines_unflat) // should be able to use the soLine to get the item and only pull the actual lot
     const taggedInventory_unflat = unflattenByCompositKey(taggedInventory, {
       1: 'so_num',
       2: 'ITEM_NUMBER',
@@ -49,6 +57,8 @@ const generateSoData = async source => {
     // still need average cost of inventory *********************************************************
 
     // Save to DB
+
+    // THE DIFFICULT PART WILL BE MANUALLY CALCING THE OTHP. ****************************************
 
     console.log('cron routine complete \n')
     return { msg: 'success', taggedInventory_unflat, catchWeightLinesModeled, catchWeightLines }

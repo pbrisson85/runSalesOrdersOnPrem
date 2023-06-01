@@ -11,11 +11,11 @@ const getCatchWeightLines = async orders => {
 
     console.log(`query ODBC for Catch Weight Lines ...`)
 
-    let responses = new Set()
+    let responses = []
 
     for (eachOrderLine of orders) {
-      const { ORDER_NUMBER, LOCATION, TAGGED_WEIGHT } = eachOrderLine
-      if (TAGGED_WEIGHT === 0) continue
+      const { ORDER_NUMBER, LOCATION, taggedLineNum, isTagged, LINE_NUMBER } = eachOrderLine
+      if (!isTagged) continue
 
       const loc_search = `%${LOCATION}%`
 
@@ -23,11 +23,7 @@ const getCatchWeightLines = async orders => {
 
       const response = await odbcConn.query(queryString, [ORDER_NUMBER, loc_search])
 
-      if (typeof response[0] === 'undefined') continue // Note that for non lot costed items, the sales order will show weight as tagged weight but since it is not truely tagged to a lot, the catch weight lines will not have a record for it. So we need to skip these items.
-
-      for (eachResponse of response) {
-        responses.add(JSON.stringify(eachResponse)) // Set will allow duplicate objects because they are different refs
-      }
+      responses.push({ ...response[taggedLineNum], soLine: LINE_NUMBER })
     }
 
     await odbcConn.close()

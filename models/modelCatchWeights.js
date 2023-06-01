@@ -20,6 +20,7 @@ const modelCatchWeights = catchWeightLines => {
           lbs: taggedArray[i * 3 + 1],
           lot: taggedArray[i * 3 + 2],
           loc: locArray[i],
+          soLine: cwLine.soLine,
         }
       }
     })
@@ -41,6 +42,7 @@ catchWeightLines: [
             "tagged_array": "   2,466.00   29,592.00 B10142               34.00      408.00 B10143         ",
             "qty_committed": 2500,
             "location_array": "00SBFRD   00SBFRD   "
+            "soLine": 1
         },
     ]
 
