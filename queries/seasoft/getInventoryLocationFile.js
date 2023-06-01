@@ -38,7 +38,7 @@ const getInventoryLocationFile = async catchWeightLines => {
       inventoryLocationFile[i] = JSON.parse(line)
     })
 
-    return responses
+    return inventoryLocationFile
   } catch (error) {
     console.error(error)
 
