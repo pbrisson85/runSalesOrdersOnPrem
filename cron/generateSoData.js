@@ -6,6 +6,7 @@ const getShipToFile = require('../queries/seasoft/getShipToFile')
 const logEvent = require('../queries/postgres/logging')
 const getCatchWeightLines = require('../queries/seasoft/getCatchWeightLines')
 const getNonLotCostedItems = require('../queries/seasoft/getNonLotCostedItems')
+const getInventoryLocationFile = require('../queries/seasoft/getInventoryLocationFile')
 
 const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const modelCatchWeights = require('../models/modelCatchWeights')
@@ -30,12 +31,13 @@ const generateSoData = async source => {
 
     // Model Data
     const mappedNonLotCostedItems = nonLotCostedItems.map(item => item.ITEM_NUMBER)
-
     const salesOrderHeader_unflat = unflattenByCompositKey(salesOrderHeader, {
       1: 'DOCUMENT_NUMBER',
     })
-
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines)
+
+    // Use catch weight lines lot and location to find array of possible items:
+    const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled)
 
     // NOW GO THROUGH EACH TAGGED LOT, LOOKUP THE LOT IN INVEN LOCATION FILE TO FIND THE ITEM, LOOKUP THE SALES ORDER LINE
 
@@ -47,7 +49,7 @@ const generateSoData = async source => {
     // Save to DB
 
     console.log('cron routine complete \n')
-    return { msg: 'success', mappedNonLotCostedItems, catchWeightLinesModeled }
+    return { msg: 'success', mappedNonLotCostedItems, catchWeightLinesModeled, taggedInventory }
   } catch (error) {
     console.error(error)
 
