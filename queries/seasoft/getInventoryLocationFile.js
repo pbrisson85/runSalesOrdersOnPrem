@@ -24,6 +24,10 @@ const getInventoryLocationFile = async catchWeightLines => {
 
       if (typeof response[0] === 'undefined') console.log('NO INVENTORY FOUND: ', catchWeightLines[key]) // DEBUG ************************
 
+      if (so_num === '374581') {
+        console.log('response: ', response)
+      }
+
       responses.push({ ...response[0], taggedLbs: lbs, taggedQty: qty, so_num })
     }
 
