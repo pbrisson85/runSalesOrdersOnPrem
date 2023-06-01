@@ -1,3 +1,4 @@
+const { each } = require('lodash')
 const { createConnection } = require('../../database/seasoftODBC')
 const { setFlag, getFlag } = require('../../queries/postgres/flags')
 const logEvent = require('../../queries/postgres/logging')
@@ -11,7 +12,7 @@ const getInventoryLocationFile = async catchWeightLines => {
 
     console.log(`query ODBC for InventoryLocFile ...`)
 
-    let responses = []
+    let responses = new Set()
 
     const keys = Object.keys(catchWeightLines)
 
@@ -24,14 +25,18 @@ const getInventoryLocationFile = async catchWeightLines => {
 
       if (typeof response[0] === 'undefined') console.log('NO INVENTORY FOUND: ', catchWeightLines[key]) // DEBUG ************************
 
-      if (so_num === '374581') {
-        console.log('response: ', response)
+      for (eachResponse of response) {
+        responses.add(JSON.stringify({ ...eachResponse, taggedLbs: lbs, taggedQty: qty, so_num })) // Set will allow duplicate objects because they are different refs
       }
-
-      responses.push({ ...response[0], taggedLbs: lbs, taggedQty: qty, so_num })
     }
 
     await odbcConn.close()
+
+    const inventoryLocationFile = Array.from(responses)
+    // parse the strings
+    inventoryLocationFile.forEach((line, i) => {
+      inventoryLocationFile[i] = JSON.parse(line)
+    })
 
     return responses
   } catch (error) {
