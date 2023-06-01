@@ -38,6 +38,10 @@ const generateSoData = async source => {
 
     // Use catch weight lines lot and location to find array of possible items:
     const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled)
+    const taggedInventory_unflat = unflattenByCompositKey(taggedInventory, {
+      1: 'LOT_NUMBER_OR_SIZE',
+      2: 'LOCATION',
+    })
 
     // NOW GO THROUGH EACH TAGGED LOT, LOOKUP THE LOT IN INVEN LOCATION FILE TO FIND THE ITEM, LOOKUP THE SALES ORDER LINE
 
@@ -49,7 +53,7 @@ const generateSoData = async source => {
     // Save to DB
 
     console.log('cron routine complete \n')
-    return { msg: 'success', mappedNonLotCostedItems, catchWeightLinesModeled, taggedInventory }
+    return { msg: 'success', mappedNonLotCostedItems, catchWeightLinesModeled, taggedInventory_unflat }
   } catch (error) {
     console.error(error)
 
