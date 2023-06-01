@@ -28,13 +28,7 @@ const getCatchWeightLines = async orders => {
 
     await odbcConn.close()
 
-    const catchWeightLines = Array.from(responses)
-    // parse the strings
-    catchWeightLines.forEach((line, i) => {
-      catchWeightLines[i] = JSON.parse(line)
-    })
-
-    return catchWeightLines
+    return responses
   } catch (error) {
     console.error(error)
 
