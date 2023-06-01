@@ -16,15 +16,15 @@ const getInventoryLocationFile = async catchWeightLines => {
     const keys = Object.keys(catchWeightLines)
 
     for (key of keys) {
-      const { lot, loc } = catchWeightLines[key]
+      const { lot, loc, lbs, qty, so_num } = catchWeightLines[key]
 
-      const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Inventory Location File\".LOCATION)} AS LOCATION, {fn RTRIM(\"Inventory Location File\".LOT_NUMBER_OR_SIZE)} AS LOT_NUMBER_OR_SIZE, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".LOCATION = ? AND \"Inventory Location File\".LOT_NUMBER_OR_SIZE = ?" //prettier-ignore
+      const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Inventory Location File\".LOCATION)} AS LOCATION, {fn RTRIM(\"Inventory Location File\".LOT_NUMBER_OR_SIZE)} AS LOT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".LOCATION = ? AND \"Inventory Location File\".LOT_NUMBER_OR_SIZE = ?" //prettier-ignore
 
       const response = await odbcConn.query(queryString, [loc, lot])
 
       if (typeof response[0] === 'undefined') console.log('NO INVENTORY FOUND: ', catchWeightLines[key]) // DEBUG ************************
 
-      responses.push(response[0])
+      responses.push({ ...response[0], taggedLbs: lbs, taggedQty: qty, so_num })
     }
 
     await odbcConn.close()

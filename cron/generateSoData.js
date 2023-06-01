@@ -39,21 +39,19 @@ const generateSoData = async source => {
     // Use catch weight lines lot and location to find array of possible items:
     const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled)
     const taggedInventory_unflat = unflattenByCompositKey(taggedInventory, {
-      1: 'LOT_NUMBER_OR_SIZE',
-      2: 'LOCATION',
+      1: 'so_num',
+      2: 'ITEM_NUMBER',
+      3: 'LOCATION',
     })
 
-    // NOW GO THROUGH EACH TAGGED LOT, LOOKUP THE LOT IN INVEN LOCATION FILE TO FIND THE ITEM, LOOKUP THE SALES ORDER LINE
-
-    // THEN MAP EVERY TAGGED LOT (MULTIPLE SALES ORDER LINES CAN BE TAGGED TO THE SAME LOT OR MULTIPLE LOTS TAGGED TO ONE SALES ORDER LINE), ADD THE NON TAGGED LOTS. NOW I SHOULD HAVE ALL THE DATA NEEDED FOR FINAL TABLE. LAST THING IN NEED IS THE COST OF EACH LINE ITEM. THIS WILL EITHER BE THE LOT COST OR THE AVERAGE COST OF THE ITEM BASED ON THE ITEM NUMBER.
-
     // Map Data
-    const data = joinData(salesOrderLines, salesOrderHeader_unflat)
+    //const data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, mappedNonLotCostedItems)
+    // still need average cost of inventory *********************************************************
 
     // Save to DB
 
     console.log('cron routine complete \n')
-    return { msg: 'success', mappedNonLotCostedItems, catchWeightLinesModeled, taggedInventory_unflat }
+    return { msg: 'success', taggedInventory_unflat }
   } catch (error) {
     console.error(error)
 

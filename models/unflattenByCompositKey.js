@@ -18,6 +18,8 @@ const unflattenByCompositKey = (data, keys) => {
     if (!unflat[key]) {
       unflat[key] = { ...row }
     } else {
+      console.log('hit duplicate key: ', key)
+
       unflat[key] = {
         ...unflat[key],
         ...row, // this adds a second set of data to a single key. you probably don't want to hit this block.
