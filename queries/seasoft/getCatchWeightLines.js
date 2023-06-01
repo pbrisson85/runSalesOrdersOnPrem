@@ -30,7 +30,9 @@ const getCatchWeightLines = async orders => {
 
     await odbcConn.close()
 
-    return responses
+    const catchWeightLines = Array.from(responses)
+
+    return catchWeightLines
   } catch (error) {
     console.error(error)
 
