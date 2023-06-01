@@ -25,7 +25,9 @@ const getCatchWeightLines = async orders => {
 
       if (typeof response[0] === 'undefined') continue // Note that for non lot costed items, the sales order will show weight as tagged weight but since it is not truely tagged to a lot, the catch weight lines will not have a record for it. So we need to skip these items.
 
-      responses.add(response)
+      for (eachResponse of response) {
+        responses.add(eachResponse)
+      }
     }
 
     await odbcConn.close()
