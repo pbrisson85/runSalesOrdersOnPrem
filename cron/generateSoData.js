@@ -24,6 +24,7 @@ const generateSoData = async source => {
     // Pull a SO line, determine if tagged or not. If tagged, need to know how many lines are tagged and what ordered number of tagged lines you are working with BECAUSE that is the only way to match up to the lot from the catch weight table. They are the same "tagged line number"
 
     // Query data
+    const lastSalesCost = getLastSalesCost()
     const salesOrderHeader = await getSalesOrderHeader()
     const specialPriceFile = await getSpecialPriceFile()
     const customerMaster = await getCustomerMaster()
@@ -45,6 +46,9 @@ const generateSoData = async source => {
       1: 'ORDER_NUMBER',
       2: 'LINE_NUMBER',
     })
+    const lastSalesCost_unflat = unflattenByCompositKey(lastSalesCost, {
+      1: 'item_number',
+    })
 
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-lotNum-Loc.
 
@@ -57,13 +61,10 @@ const generateSoData = async source => {
     })
 
     // Map Data
-    let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat)
+    let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat)
 
     // Add inventory average lot cost to each untagged line
     data = await getAverageCosts(data)
-
-    // Add last sales cost to each line
-    data = await getLastSalesCost(data)
 
     return data
 

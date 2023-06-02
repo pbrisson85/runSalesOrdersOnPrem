@@ -1,36 +1,20 @@
 const logEvent = require('./logging')
 
-const getLastSalesCost = async data => {
+const getLastSalesCost = async () => {
   try {
     const { Client } = require('pg')
     const pgClient = new Client() // config from ENV
     await pgClient.connect()
 
-    console.log(`query postgres to get last sales cost ...`)
+    console.log(`query postgres to get last sales cost for all items ...`)
 
-    let responses = []
-    for (line of data) {
-      const itemNum = line.line.ITEM_NUMBER
-
-      console.log(itemNum)
-
-      const response = await pgClient.query(
-        'SELECT (sales_line_items.calc_gl_cogs/NULLIF(sales_line_items.calc_gm_rept_weight,0)) AS cost_lb FROM "salesReporting".sales_line_items WHERE sales_line_items.item_number = $1 ORDER BY sales_line_items.formatted_invoice_date DESC LIMIT 1',
-        [itemNum]
-      )
-
-      responses.push({
-        ...line,
-        lastSale: {
-          costPerLb: response === null || typeof response.rows[0] === 'undefined' ? null : response.rows[0].cost_lbs,
-          date: response === null || typeof response.rows[0] === 'undefined' ? null : response.rows[0].formatted_invoice_date,
-        },
-      })
-    }
+    const response = await pgClient.query(
+      'SELECT t.item_number, t.formatted_invoice_date, t.calc_gl_cogs/NULLIF(t.calc_gm_rept_weight,0) AS cost_lb FROM (SELECT sales_line_items.item_number, sales_line_items.formatted_invoice_date, sales_line_items.calc_gl_cogs, sales_line_items.calc_gm_rept_weight, row_number() OVER (PARTITION BY sales_line_items.item_number ORDER BY sales_line_items.formatted_invoice_date DESC) AS seqnum FROM "salesReporting".sales_line_items) AS t WHERE seqnum = 1'
+    )
 
     await pgClient.end()
 
-    return responses
+    return response.rows
   } catch (error) {
     console.log(error)
     await logEvent({
