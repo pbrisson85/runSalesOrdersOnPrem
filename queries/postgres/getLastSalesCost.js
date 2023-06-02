@@ -6,6 +6,8 @@ const getLastSalesCost = async data => {
     const pgClient = new Client() // config from ENV
     await pgClient.connect()
 
+    console.log(`query postgres to get last sales cost ...`)
+
     let responses = []
     for (line of data) {
       const itemNum = line.line.ITEM_NUMBER
