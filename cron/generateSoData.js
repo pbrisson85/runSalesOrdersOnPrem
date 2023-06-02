@@ -3,10 +3,12 @@ const getSalesOrderHeader = require('../queries/seasoft/getSalesOrderHeader')
 const getCustomerMaster = require('../queries/seasoft/getCustomerMasterFile')
 const getSpecialPriceFile = require('../queries/seasoft/getSpecialPriceFile')
 const getShipToFile = require('../queries/seasoft/getShipToFile')
-const logEvent = require('../queries/postgres/logging')
 const getCatchWeightLines = require('../queries/seasoft/getCatchWeightLines')
 const getNonLotCostedItems = require('../queries/seasoft/getNonLotCostedItems')
 const { getLotCosts, getAverageCosts } = require('../queries/seasoft/getInventoryLocationFile')
+
+const logEvent = require('../queries/postgres/logging')
+const getLastSalesCost = require('../queries/postgres/getLastSalesCost')
 
 const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const modelCatchWeights = require('../models/modelCatchWeights')
@@ -59,6 +61,9 @@ const generateSoData = async source => {
 
     // Add inventory average lot cost to each untagged line
     data = getAverageCosts(data)
+
+    // Add last sales cost to each line
+    data = getLastSalesCost(data)
 
     return data
 

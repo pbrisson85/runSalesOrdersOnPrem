@@ -29,4 +29,4 @@ const getLastSalesCost = async data => {
   }
 }
 
-module.exports = logEvent
+module.exports = getLastSalesCost
