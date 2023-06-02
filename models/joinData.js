@@ -8,7 +8,7 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
       header: salesOrderHeader_unflat[ORDER_NUMBER][0],
       line,
       taggedLots: taggedInventory_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`],
-      lastSalesCost: lastSalesCost_unflat[ITEM_NUMBER][0],
+      lastSalesCost: typeof lastSalesCost_unflat[ITEM_NUMBER] === 'undefined' ? null : lastSalesCost_unflat[ITEM_NUMBER][0],
     }
   })
 
