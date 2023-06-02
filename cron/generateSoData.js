@@ -43,7 +43,9 @@ const generateSoData = async source => {
       1: 'ORDER_NUMBER',
       2: 'LINE_NUMBER',
     })
-    const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-taggedLineNum.
+    const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-lotNum-Loc.
+
+    return catchWeightLinesModeled
 
     // Now I have the so line and the lots tagged to it. Map
 
