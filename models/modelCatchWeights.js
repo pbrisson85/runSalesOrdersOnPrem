@@ -5,7 +5,7 @@ const modelCatchWeights = catchWeightLines => {
     let clean = {}
 
     catchWeightLines.forEach((cwLine, ix) => {
-      if (typeof cwLine === 'undefined') return
+      if (typeof cwLine.tagged_array === 'undefined' || cwLine.tagged_array === null) console.log(cwLine)
 
       const taggedArray = cwLine.tagged_array.trim().split(/[\s\uFEFF\xA0]+/)
       const locArray = cwLine.location_array.trim().split(/[\s\uFEFF\xA0]+/)
