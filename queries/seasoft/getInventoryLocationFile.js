@@ -71,8 +71,10 @@ const getAverageCosts = async data => {
 
       const aveCostResponse = await odbcConn.query(queryString_1, [line.line.ITEM_NUMBER])
 
+      let lastCostResponse
+
       try {
-        const lastCostResponse = await odbcConn.query(queryString_3, [line.line.ITEM_NUMBER, line.line.ITEM_NUMBER])
+        lastCostResponse = await odbcConn.query(queryString_3, [line.line.ITEM_NUMBER, line.line.ITEM_NUMBER])
       } catch (error) {
         console.log('error trying to get lastWithdrawalCost for item: ', line.line.ITEM_NUMBER)
 
