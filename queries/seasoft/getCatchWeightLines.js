@@ -17,7 +17,7 @@ const getCatchWeightLines = async orders => {
       const { ORDER_NUMBER, taggedLineNum, isTagged, LINE_NUMBER } = eachOrderLine
       if (!isTagged) continue
 
-      const queryString = "SELECT {fn RTRIM(\"Catch Weight Lines\".DOCUMENT_LINE_KEY)} AS so_num, \"Catch Weight Lines\".WEIGHT_REC AS tagged_array, \"Catch Weight Lines\".QTY_COMMITTED AS qty_committed, \"Catch Weight Lines\".LOCATION_REC AS location_array FROM 'Catch Weight Lines' WHERE \"Catch Weight Lines\".DOCUMENT_LINE_KEY = ?" //prettier-ignore
+      const queryString = "SELECT {fn RTRIM(\"Catch Weight Lines\".DOCUMENT_LINE_KEY)} AS so_num, \"Catch Weight Lines\".WEIGHT_REC AS tagged_array, \"Catch Weight Lines\".QTY_COMMITTED AS qty_committed, \"Catch Weight Lines\".LOCATION_REC AS location_array FROM 'Catch Weight Lines' WHERE \"Catch Weight Lines\".DOCUMENT_LINE_KEY = ? AND \"Catch Weight Lines\".QTY_COMMITTED > 0" //prettier-ignore
 
       const response = await odbcConn.query(queryString, [ORDER_NUMBER])
 
