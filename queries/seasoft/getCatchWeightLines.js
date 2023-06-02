@@ -23,7 +23,7 @@ const getCatchWeightLines = async orders => {
 
       const response = await odbcConn.query(queryString, [ORDER_NUMBER, loc_search])
 
-      responses.push({ ...response[taggedLineNum], soLine: LINE_NUMBER })
+      responses.push({ ...response[taggedLineNum], soLine: LINE_NUMBER, orderNum: ORDER_NUMBER, location: LOCATION, taggedLineNum, isTagged })
     }
 
     await odbcConn.close()
