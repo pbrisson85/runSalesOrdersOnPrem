@@ -23,7 +23,7 @@ const getInventoryLocationFile = async (catchWeightLines, salesOrderLines_unflat
 
       const response = await odbcConn.query(queryString, [loc, lot, item])
 
-      if (typeof response[0] === 'undefined') console.log('NO INVENTORY FOUND: ', catchWeightLines[key]) // DEBUG ************************
+      if (typeof response[0] === 'undefined') console.log('NO INVENTORY FOUND: ', catchWeightLines[key], item) // DEBUG ************************
 
       // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
 
