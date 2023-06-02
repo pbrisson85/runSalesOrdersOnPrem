@@ -68,6 +68,8 @@ const generateSoData = async source => {
 
     return data
 
+    // Need a warning col for (no cost, no freight, old cost)
+
     // Save to DB
 
     // THE DIFFICULT PART WILL BE MANUALLY CALCING THE OTHP. ****************************************
