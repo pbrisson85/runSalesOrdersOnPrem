@@ -43,9 +43,9 @@ const generateSoData = async source => {
       1: 'ORDER_NUMBER',
       2: 'LINE_NUMBER',
     })
-    const catchWeightLinesModeled = modelCatchWeights(catchWeightLines)
+    const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-taggedLineNum.
 
-    return catchWeightLinesModeled
+    // Now I have the so line and the lots tagged to it. Map
 
     // Use catch weight lines lot and location to find array of possible items:
     const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled, salesOrderLines_unflat) // should be able to use the soLine to get the item and only pull the actual lot

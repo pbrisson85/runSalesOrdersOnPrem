@@ -3,24 +3,42 @@ const modelCatchWeights = catchWeightLines => {
     console.log('entering modelCatchWeights...')
 
     let clean = {}
+    const duplicateTest = new Set()
 
     catchWeightLines.forEach((cwLine, ix) => {
-      if (typeof cwLine.tagged_array === 'undefined' || cwLine.tagged_array === null) console.log(cwLine)
+      if (typeof cwLine.tagged_array === 'undefined' || cwLine.tagged_array === null) console.log(cwLine) // DEBUG
 
+      const { so_num, soLine } = cwLine
+
+      // Clean seasoft arrays
       const taggedArray = cwLine.tagged_array.trim().split(/[\s\uFEFF\xA0]+/)
       const locArray = cwLine.location_array.trim().split(/[\s\uFEFF\xA0]+/)
       const numberOfLots = taggedArray.length / 3
 
       for (let i = 0; i < numberOfLots; i++) {
-        const uuid = `${ix}-${i}`
+        // Pull data from arrays
+        const qty = taggedArray[i * 3]
+        const lbs = taggedArray[i * 3 + 1]
+        const lot = taggedArray[i * 3 + 2]
+        const loc = locArray[i]
+
+        // Create unique key
+        const uuid = `${soNum}-${soLine}-${lot}-${loc}`
+        if (duplicateTest.has(uuid)) {
+          console.log('duplicate uuid found in modelCatchWeights')
+          console.log(uuid)
+          console.log(cwLine)
+          console.log(clean[uuid])
+        }
+        duplicateTest.add(uuid)
 
         clean[uuid] = {
-          so_num: cwLine.so_num,
-          qty: taggedArray[i * 3],
-          lbs: taggedArray[i * 3 + 1],
-          lot: taggedArray[i * 3 + 2],
-          loc: locArray[i],
-          soLine: cwLine.soLine,
+          so_num,
+          qty,
+          lbs,
+          lot,
+          loc,
+          soLine,
         }
       }
     })
