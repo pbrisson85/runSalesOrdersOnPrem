@@ -18,8 +18,7 @@ const unflattenByCompositKey = (data, keys) => {
     if (!unflat[key]) {
       unflat[key] = [{ ...row }]
     } else {
-      console.log('hit duplicate key: ', key)
-
+      console.log('hit duplicate key in unflattenByCompositKey: ', key)
       unflat[key].push(row)
     }
   })

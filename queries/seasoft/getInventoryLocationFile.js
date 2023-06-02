@@ -17,7 +17,7 @@ const getInventoryLocationFile = async (catchWeightLines, salesOrderLines_unflat
 
     for (key of keys) {
       const { lot, loc, lbs, qty, so_num, soLine } = catchWeightLines[key]
-      const item = salesOrderLines_unflat[`${so_num}-${soLine}`].ITEM_NUMBER
+      const item = salesOrderLines_unflat[`${so_num}-${soLine}`][0].ITEM_NUMBER
 
       console.log(`query ODBC for InventoryLocFile. Item: ${item}, Lot: ${lot}, Loc: ${loc} ...`)
 
