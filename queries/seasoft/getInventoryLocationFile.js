@@ -67,7 +67,7 @@ const getAverageCosts = async data => {
 
       // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
 
-      responses.push({ ...line, inventory: { ...response[0] } })
+      responses.push({ ...line, inventory: { ...response[0], costPerLb: response[0]?.cost_on_hand / response[0]?.lbs_on_hand } })
     }
 
     await odbcConn.close()
