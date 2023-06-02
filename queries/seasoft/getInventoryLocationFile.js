@@ -40,7 +40,7 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
 
     await logEvent({
       event_type: 'error',
-      funct: 'getInventoryLocationFile',
+      funct: 'getLotCosts',
       reason: error.message,
       note: 'flip odbcErrorState flag',
     })
@@ -70,20 +70,30 @@ const getAverageCosts = async data => {
       console.log(line.line.ITEM_NUMBER)
 
       const aveCostResponse = await odbcConn.query(queryString_1, [line.line.ITEM_NUMBER])
-      const lastCostResponse = await odbcConn.query(queryString_3, [line.line.ITEM_NUMBER, line.line.ITEM_NUMBER])
 
-      // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
+      try {
+        const lastCostResponse = await odbcConn.query(queryString_3, [line.line.ITEM_NUMBER, line.line.ITEM_NUMBER])
+      } catch (error) {
+        console.log('error trying to get lastWithdrawalCost for item: ', line.line.ITEM_NUMBER)
 
-      responses.push({
-        ...line,
-        inventory: {
-          costOnHand: aveCostResponse[0]?.cost_on_hand,
-          lbsOnHand: aveCostResponse[0]?.lbs_on_hand,
-          aveOnHandCostPerLb: aceCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
-          lastWithDrawalCost: lastCostResponse[0]?.LAST_COST,
-          lastWithDrawalDate: lastCostResponse[0]?.LAST_WITHDRAWAL_DATE,
-        },
-      })
+        await logEvent({
+          event_type: 'error',
+          funct: 'getAverageCosts',
+          reason: error.message,
+          note: 'typically this is due to a date error in seasoft',
+        })
+      } finally {
+        responses.push({
+          ...line,
+          inventory: {
+            costOnHand: aveCostResponse[0]?.cost_on_hand,
+            lbsOnHand: aveCostResponse[0]?.lbs_on_hand,
+            aveOnHandCostPerLb: aceCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
+            lastWithDrawalCost: lastCostResponse[0]?.LAST_COST,
+            lastWithDrawalDate: lastCostResponse[0]?.LAST_WITHDRAWAL_DATE,
+          },
+        })
+      }
     }
 
     await odbcConn.close()
