@@ -56,7 +56,12 @@ const generateSoData = async source => {
 
     // Map Data
 
-    const data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat)
+    let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat)
+
+    // are there lines that have weight as both tagged and untagged?
+    data = data.filter(line => {
+      return line.line.TAGGED_WEIGHT > 0 && line.line.UNTAGGED_WEIGHT > 0
+    })
 
     return data
 
