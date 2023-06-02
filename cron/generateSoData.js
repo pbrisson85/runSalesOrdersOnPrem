@@ -33,8 +33,9 @@ const generateSoData = async source => {
     // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
     salesOrderLines = assignCatchWeightLine(salesOrderLines, nonLotCostedItems)
 
-    return salesOrderLines
     const catchWeightLines = await getCatchWeightLines(salesOrderLines) // adds sales order line number by using the tagged line number
+
+    return catchWeightLines
 
     // Model Data
     const salesOrderHeader_unflat = unflattenByCompositKey(salesOrderHeader, {
