@@ -45,19 +45,16 @@ const generateSoData = async source => {
     })
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-lotNum-Loc.
 
-    return catchWeightLinesModeled
+    // Use catch weight lines lot and location, along with sales order line itemNum to find The inventory cost:
+    const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled, salesOrderLines_unflat)
 
-    // Now I have the so line and the lots tagged to it. Map
+    return taggedInventory
 
-    // Use catch weight lines lot and location to find array of possible items:
-    const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled, salesOrderLines_unflat) // should be able to use the soLine to get the item and only pull the actual lot
     const taggedInventory_unflat = unflattenByCompositKey(taggedInventory, {
       1: 'so_num',
       2: 'ITEM_NUMBER',
       3: 'LOCATION',
     })
-
-    // NEED TO RUN THROUG THIS TO SEE IF THE OUTPUT OF EACH FUNCTION IS WHAT I EXPECT. HITTING AN ERROR
 
     // Map Data
     //const data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, mappedNonLotCostedItems)

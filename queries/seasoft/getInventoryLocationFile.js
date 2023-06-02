@@ -1,4 +1,3 @@
-const { each } = require('lodash')
 const { createConnection } = require('../../database/seasoftODBC')
 const { setFlag, getFlag } = require('../../queries/postgres/flags')
 const logEvent = require('../../queries/postgres/logging')
@@ -17,7 +16,7 @@ const getInventoryLocationFile = async (catchWeightLines, salesOrderLines_unflat
     const keys = Object.keys(catchWeightLines)
 
     for (key of keys) {
-      const { lot, loc, lbs, qty, so_num } = catchWeightLines[key]
+      const { lot, loc, lbs, qty, so_num, soLine } = catchWeightLines[key]
       const item = salesOrderLines_unflat[`${so_num}-${soLine}`].ITEM_NUMBER
 
       const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Inventory Location File\".LOCATION)} AS LOCATION, {fn RTRIM(\"Inventory Location File\".LOT_NUMBER_OR_SIZE)} AS LOT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".LOCATION = ? AND \"Inventory Location File\".LOT_NUMBER_OR_SIZE = ? AND \"Inventory Location File\".ITEM_NUMBER = ?" //prettier-ignore
