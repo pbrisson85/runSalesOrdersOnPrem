@@ -5,8 +5,8 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
     const { LINE_NUMBER, ORDER_NUMBER } = line
 
     return {
-      ...line,
-      ...salesOrderHeader_unflat[ORDER_NUMBER],
+      header: salesOrderHeader_unflat[ORDER_NUMBER][0],
+      line,
       taggedLots: taggedInventory_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`],
     }
   })
