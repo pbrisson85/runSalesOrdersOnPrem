@@ -66,9 +66,10 @@ const getAverageCosts = async data => {
       responses.push({
         ...line,
         inventory: {
-          costOnHand: aveCostResponse[0]?.cost_on_hand,
-          lbsOnHand: aveCostResponse[0]?.lbs_on_hand,
-          aveOnHandCostPerLb: aveCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
+          costOnHand: typeof aveCostResponse[0] === 'undefined' ? null : aveCostResponse[0]?.cost_on_hand,
+          lbsOnHand: typeof aveCostResponse[0] === 'undefined' ? null : aveCostResponse[0]?.lbs_on_hand,
+          aveOnHandCostPerLb:
+            typeof aveCostResponse[0] === 'undefined' ? null : aveCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
         },
       })
     }
