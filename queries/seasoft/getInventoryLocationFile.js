@@ -59,15 +59,26 @@ const getAverageCosts = async data => {
     let responses = []
 
     for (line of data) {
-      const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT) AS lbs_on_hand, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT * \"Inventory Location File\".LAST_COST) AS cost_on_hand FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
+      const queryString_1 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT) AS lbs_on_hand, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT * \"Inventory Location File\".LAST_COST) AS cost_on_hand FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
 
-      const response = await odbcConn.query(queryString, [line.line.ITEM_NUMBER])
+      const aveCostResponse = await odbcConn.query(queryString_1, [line.line.ITEM_NUMBER])
 
-      if (typeof response[0] === 'undefined') console.log('NO INVENTORY FOUND: ', line.line) // DEBUG ************************
+      const queryString_2 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, \"Inventory Location File\".LAST_COST, \"Inventory Location File\".LAST_WITHDRAWAL_DATE FROM 'Inventory Location File' WHERE \"Inventory Location File\".LAST_WITHDRAWAL_DATE IN (SELECT MAX(\"Inventory Location File\".LAST_WITHDRAWAL_DATE) FROM 'Inventory Location File' WHERE \"Inventory Location File\".ITEM_NUMBER = ? AND \"Inventory Location File\".LAST_COST > 0 AND \"Inventory Location File\".LAST_COST IS NOT NULL) AND \"Inventory Location File\".ITEM_NUMBER = ?" //prettier-ignore
+
+      const lastCostResponse = await odbcConn.query(queryString_2, [line.line.ITEM_NUMBER, line.line.ITEM_NUMBER])
 
       // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
 
-      responses.push({ ...line, inventory: { ...response[0], costPerLb: response[0]?.cost_on_hand / response[0]?.lbs_on_hand } })
+      responses.push({
+        ...line,
+        inventory: {
+          costOnHand: aveCostResponse[0]?.cost_on_hand,
+          lbsOnHand: aveCostResponse[0]?.lbs_on_hand,
+          aveOnHandCostPerLb: aceCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
+          lastWithDrawalCost: lastCostResponse[0]?.LAST_COST,
+          lastWithDrawalDate: lastCostResponse[0]?.LAST_WITHDRAWAL_DATE,
+        },
+      })
     }
 
     await odbcConn.close()
