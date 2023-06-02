@@ -60,10 +60,10 @@ const generateSoData = async source => {
     let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat)
 
     // Add inventory average lot cost to each untagged line
-    data = getAverageCosts(data)
+    data = await getAverageCosts(data)
 
     // Add last sales cost to each line
-    data = getLastSalesCost(data)
+    data = await getLastSalesCost(data)
 
     return data
 
