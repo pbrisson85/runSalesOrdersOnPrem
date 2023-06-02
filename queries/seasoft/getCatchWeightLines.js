@@ -23,7 +23,10 @@ const getCatchWeightLines = async orders => {
 
       const response = await odbcConn.query(queryString, [ORDER_NUMBER, loc_search])
 
-      responses.push({ ...response[taggedLineNum], soLine: LINE_NUMBER, orderNum: ORDER_NUMBER, location: LOCATION, taggedLineNum, isTagged })
+      if (typeof response[taggedLineNum] === 'undefined')
+        console.log('no catch weight line found for order: ', ORDER_NUMBER, ' and line: ', LINE_NUMBER, ' and taggedLineNum: ', taggedLineNum) //DEBUG *******************************
+
+      responses.push({ ...response[taggedLineNum], soLine: LINE_NUMBER })
     }
 
     await odbcConn.close()
