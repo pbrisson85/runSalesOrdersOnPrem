@@ -19,6 +19,8 @@ const getInventoryLocationFile = async (catchWeightLines, salesOrderLines_unflat
       const { lot, loc, lbs, qty, so_num, soLine } = catchWeightLines[key]
       const item = salesOrderLines_unflat[`${so_num}-${soLine}`].ITEM_NUMBER
 
+      console.log(`query ODBC for InventoryLocFile. Item: ${item}, Lot: ${lot}, Loc: ${loc} ...`)
+
       const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Inventory Location File\".LOCATION)} AS LOCATION, {fn RTRIM(\"Inventory Location File\".LOT_NUMBER_OR_SIZE)} AS LOT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".LOCATION = ? AND \"Inventory Location File\".LOT_NUMBER_OR_SIZE = ? AND \"Inventory Location File\".ITEM_NUMBER = ?" //prettier-ignore
 
       const response = await odbcConn.query(queryString, [loc, lot, item])
