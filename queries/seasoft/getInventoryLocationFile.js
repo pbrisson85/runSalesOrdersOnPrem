@@ -61,41 +61,16 @@ const getAverageCosts = async data => {
     for (line of data) {
       const queryString_1 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT) AS lbs_on_hand, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT * \"Inventory Location File\".LAST_COST) AS cost_on_hand FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
 
-      // const queryString_2 = "SELECT MAX(\"Inventory Location File\".LAST_WITHDRAWAL_DATE) FROM 'Inventory Location File' WHERE \"Inventory Location File\".ITEM_NUMBER = ? AND \"Inventory Location File\".LAST_COST > 0 AND \"Inventory Location File\".LAST_COST IS NOT NULL" //prettier-ignore
-
-      // const latestDate = await odbcConn.query(queryString_1, [line.line.ITEM_NUMBER])
-
-      const queryString_3 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, \"Inventory Location File\".LAST_COST, \"Inventory Location File\".LAST_WITHDRAWAL_DATE FROM 'Inventory Location File' WHERE \"Inventory Location File\".LAST_WITHDRAWAL_DATE IN (SELECT MAX(\"Inventory Location File\".LAST_WITHDRAWAL_DATE) FROM 'Inventory Location File' WHERE \"Inventory Location File\".ITEM_NUMBER = ? AND \"Inventory Location File\".LAST_COST > 0 AND \"Inventory Location File\".LAST_COST IS NOT NULL) AND \"Inventory Location File\".ITEM_NUMBER = ?" //prettier-ignore
-
-      console.log(line.line.ITEM_NUMBER)
-
       const aveCostResponse = await odbcConn.query(queryString_1, [line.line.ITEM_NUMBER])
 
-      let lastCostResponse
-
-      try {
-        lastCostResponse = await odbcConn.query(queryString_3, [line.line.ITEM_NUMBER, line.line.ITEM_NUMBER])
-      } catch (error) {
-        console.log('error trying to get lastWithdrawalCost for item: ', line.line.ITEM_NUMBER)
-
-        await logEvent({
-          event_type: 'error',
-          funct: 'getAverageCosts',
-          reason: error.message,
-          note: 'typically this is due to a date error in seasoft',
-        })
-      } finally {
-        responses.push({
-          ...line,
-          inventory: {
-            costOnHand: aveCostResponse[0]?.cost_on_hand,
-            lbsOnHand: aveCostResponse[0]?.lbs_on_hand,
-            aveOnHandCostPerLb: aveCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
-            lastWithDrawalCost: typeof lastCostResponse === 'undefined' ? null : lastCostResponse[0]?.LAST_COST,
-            lastWithDrawalDate: typeof lastCostResponse === 'undefined' ? null : lastCostResponse[0]?.LAST_WITHDRAWAL_DATE,
-          },
-        })
-      }
+      responses.push({
+        ...line,
+        inventory: {
+          costOnHand: aveCostResponse[0]?.cost_on_hand,
+          lbsOnHand: aveCostResponse[0]?.lbs_on_hand,
+          aveOnHandCostPerLb: aveCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
+        },
+      })
     }
 
     await odbcConn.close()
