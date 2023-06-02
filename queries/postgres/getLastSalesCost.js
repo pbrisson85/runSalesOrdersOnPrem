@@ -14,7 +14,14 @@ const getLastSalesCost = async () => {
 
     await pgClient.end()
 
-    return response.rows
+    let returnVal
+    if (response.rows.length > 0) {
+      returnVal = response.rows
+    } else {
+      returnVal = [{ item_number: null, formatted_invoice_date: null, cost_lb: null }]
+    }
+
+    return returnVal
   } catch (error) {
     console.log(error)
     await logEvent({
