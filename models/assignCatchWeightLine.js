@@ -1,7 +1,7 @@
 const assignCatchWeightLine = (salesOrderLines, nonLotCostedItems) => {
   // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
   let soNum = ''
-  let counter = 0
+  let counter = -1
 
   const soLines = salesOrderLines.map((line, ix) => {
     const { TAGGED_WEIGHT, ITEM_NUMBER, ORDER_NUMBER } = line
@@ -14,11 +14,10 @@ const assignCatchWeightLine = (salesOrderLines, nonLotCostedItems) => {
     if (soNum !== ORDER_NUMBER) {
       // reset counter and soNum
       soNum = ORDER_NUMBER
-      counter = 0
-    } else {
-      // increment counter
-      if (isTagged) counter++
+      counter = -1
     }
+    // increment counter
+    if (isTagged) counter++
 
     // assign counter to line
 
