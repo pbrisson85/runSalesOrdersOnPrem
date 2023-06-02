@@ -14,7 +14,13 @@ const getLastSalesCost = async data => {
         [itemNum]
       )
 
-      responses.push({ ...line, lastSale: { costPerLb: response.rows[0].cost_lbs, date: response.rows[0].formatted_invoice_date } })
+      responses.push({
+        ...line,
+        lastSale: {
+          costPerLb: typeof response.rows[0] === 'undefined' ? null : response.rows[0].cost_lbs,
+          date: typeof response.rows[0] === 'undefined' ? null : response.rows[0].formatted_invoice_date,
+        },
+      })
     }
 
     await pgClient.end()
