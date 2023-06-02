@@ -10,7 +10,7 @@ const getLastSalesCost = async data => {
     for (line of data) {
       const itemNum = line.line.ITEM_NUMBER
       const response = await pgClient.query(
-        'SELECT (sales_line_items.calc_gl_cogs/sales_line_items.calc_gm_rept_weight) AS cost_lb FROM "salesReporting".sales_line_items WHERE sales_line_items.item_number = $1 ORDER BY sales_line_items.formatted_invoice_date DESC LIMIT 1',
+        'SELECT (sales_line_items.calc_gl_cogs/NULLIF(sales_line_items.calc_gm_rept_weight,0)) AS cost_lb FROM "salesReporting".sales_line_items WHERE sales_line_items.item_number = $1 ORDER BY sales_line_items.formatted_invoice_date DESC LIMIT 1',
         [itemNum]
       )
 
