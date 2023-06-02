@@ -44,8 +44,6 @@ const generateSoData = async source => {
       2: 'LINE_NUMBER',
     })
 
-    return salesOrderLines_unflat
-
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-lotNum-Loc.
 
     // Use catch weight lines lot and location, along with sales order line itemNum to find The inventory cost:
