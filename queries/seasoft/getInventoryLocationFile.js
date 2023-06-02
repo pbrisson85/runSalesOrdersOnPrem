@@ -88,7 +88,7 @@ const getAverageCosts = async data => {
           inventory: {
             costOnHand: aveCostResponse[0]?.cost_on_hand,
             lbsOnHand: aveCostResponse[0]?.lbs_on_hand,
-            aveOnHandCostPerLb: aceCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
+            aveOnHandCostPerLb: aveCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
             lastWithDrawalCost: lastCostResponse[0]?.LAST_COST,
             lastWithDrawalDate: lastCostResponse[0]?.LAST_WITHDRAWAL_DATE,
           },
