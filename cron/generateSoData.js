@@ -62,6 +62,7 @@ const generateSoData = async source => {
     // Add inventory average lot cost to each untagged line
     data = getAverageCosts(data)
 
+    return data
     // Add last sales cost to each line
     data = getLastSalesCost(data)
 
