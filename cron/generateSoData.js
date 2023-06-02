@@ -32,6 +32,8 @@ const generateSoData = async source => {
 
     // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
     salesOrderLines = assignCatchWeightLine(salesOrderLines, nonLotCostedItems)
+
+    return salesOrderLines
     const catchWeightLines = await getCatchWeightLines(salesOrderLines) // adds sales order line number by using the tagged line number
 
     // Model Data
@@ -51,6 +53,8 @@ const generateSoData = async source => {
       2: 'ITEM_NUMBER',
       3: 'LOCATION',
     })
+
+    // NEED TO RUN THROUG THIS TO SEE IF THE OUTPUT OF EACH FUNCTION IS WHAT I EXPECT. HITTING AN ERROR
 
     // Map Data
     //const data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, mappedNonLotCostedItems)
