@@ -16,15 +16,11 @@ const getCatchWeightLines = async orders => {
     for (eachOrderLine of orders) {
       const { ORDER_NUMBER, taggedLineNum, isTagged, LINE_NUMBER } = eachOrderLine
 
-      if (ORDER_NUMBER === '374195') console.log('374195 line: ', eachOrderLine) // DEBUG ************************
-
       if (!isTagged) continue
 
       const queryString = "SELECT {fn RTRIM(\"Catch Weight Lines\".DOCUMENT_LINE_KEY)} AS so_num, \"Catch Weight Lines\".WEIGHT_REC AS tagged_array, \"Catch Weight Lines\".QTY_COMMITTED AS qty_committed, \"Catch Weight Lines\".LOCATION_REC AS location_array FROM 'Catch Weight Lines' WHERE \"Catch Weight Lines\".DOCUMENT_LINE_KEY = ? AND \"Catch Weight Lines\".WEIGHT_REC IS NOT NULL" //prettier-ignore
 
       const response = await odbcConn.query(queryString, [ORDER_NUMBER])
-
-      if (ORDER_NUMBER === '374195') console.log('374195 response: ', response) // DEBUG ************************
 
       if (typeof response[taggedLineNum] === 'undefined')
         console.log('no catch weight line found for order: ', ORDER_NUMBER, ' and line: ', LINE_NUMBER, ' and taggedLineNum: ', taggedLineNum) //DEBUG *******************************
