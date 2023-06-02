@@ -2,14 +2,14 @@ const { createConnection } = require('../../database/seasoftODBC')
 const { setFlag, getFlag } = require('../../queries/postgres/flags')
 const logEvent = require('../../queries/postgres/logging')
 
-const getInventoryLocationFile = async (catchWeightLines, salesOrderLines_unflat) => {
+const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
   try {
     const errState = await getFlag('odbcErrorState')
     if (errState) return []
 
     const odbcConn = await createConnection()
 
-    console.log(`query ODBC for InventoryLocFile ...`)
+    console.log(`query ODBC for InventoryLocFile for each lot cost ...`)
 
     let responses = []
 
@@ -47,4 +47,45 @@ const getInventoryLocationFile = async (catchWeightLines, salesOrderLines_unflat
   }
 }
 
-module.exports = getInventoryLocationFile
+const getAverageCosts = async data => {
+  try {
+    const errState = await getFlag('odbcErrorState')
+    if (errState) return []
+
+    const odbcConn = await createConnection()
+
+    console.log(`query ODBC for InventoryLocFile for ave inventory cost ...`)
+
+    let responses = []
+
+    for (line of data) {
+      const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, SUM(\"Inventory Location File\".QUANTITY_COMMITTED * \"Inventory Location File\".LOT_AVERAGE_WEIGHT) AS lbs_committed, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT) AS lbs_on_hand, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT * \"Inventory Location File\".LAST_COST) AS cost_on_hand FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
+
+      const response = await odbcConn.query(queryString, [line.line.ITEM_NUMBER])
+
+      if (typeof response[0] === 'undefined') console.log('NO INVENTORY FOUND: ', catchWeightLines[key], item) // DEBUG ************************
+
+      // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
+
+      responses.push({ ...line, inventory: { ...response[0] } })
+    }
+
+    await odbcConn.close()
+
+    return responses
+  } catch (error) {
+    console.error(error)
+
+    setFlag('odbcErrorState', true) // set flag to prevent further requests
+
+    await logEvent({
+      event_type: 'error',
+      funct: 'getInventoryLocationFile',
+      reason: error.message,
+      note: 'flip odbcErrorState flag',
+    })
+  }
+}
+
+module.exports.getLotCosts = getLotCosts
+module.exports.getAverageCosts = getAverageCosts

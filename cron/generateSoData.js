@@ -6,7 +6,7 @@ const getShipToFile = require('../queries/seasoft/getShipToFile')
 const logEvent = require('../queries/postgres/logging')
 const getCatchWeightLines = require('../queries/seasoft/getCatchWeightLines')
 const getNonLotCostedItems = require('../queries/seasoft/getNonLotCostedItems')
-const getInventoryLocationFile = require('../queries/seasoft/getInventoryLocationFile')
+const { getLotCosts, getAverageCosts } = require('../queries/seasoft/getInventoryLocationFile')
 
 const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const modelCatchWeights = require('../models/modelCatchWeights')
@@ -47,7 +47,7 @@ const generateSoData = async source => {
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-lotNum-Loc.
 
     // Use catch weight lines lot and location, along with sales order line itemNum to find The inventory cost:
-    const taggedInventory = await getInventoryLocationFile(catchWeightLinesModeled, salesOrderLines_unflat)
+    const taggedInventory = await getLotCosts(catchWeightLinesModeled, salesOrderLines_unflat)
 
     const taggedInventory_unflat = unflattenByCompositKey(taggedInventory, {
       1: 'so_num',
@@ -55,21 +55,19 @@ const generateSoData = async source => {
     })
 
     // Map Data
-
     let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat)
 
-    // are there lines that have weight as both tagged and untagged?
-    data = data.filter(line => {
-      return line.line.TAGGED_WEIGHT > 0 && line.line.UNTAGGED_WEIGHT > 0
-    })
+    // Add inventory average lot cost to each untagged line
+    data = getAverageCosts(data)
 
     return data
-
-    // still need average cost of inventory *********************************************************
 
     // Save to DB
 
     // THE DIFFICULT PART WILL BE MANUALLY CALCING THE OTHP. ****************************************
+
+    // TESTS
+    // Reconcile tagged weight: The sume of taggedLots.taggedLbs === line.TAGGED_WEIGHT
 
     console.log('cron routine complete \n')
     return { msg: 'success', taggedInventory_unflat, catchWeightLinesModeled, catchWeightLines }
