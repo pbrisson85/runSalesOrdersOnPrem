@@ -23,7 +23,7 @@ const modelCatchWeights = catchWeightLines => {
         const loc = locArray[i]
 
         // Create unique key
-        const uuid = `${soNum}-${soLine}-${lot}-${loc}`
+        const uuid = `${so_num}-${soLine}-${lot}-${loc}`
         if (duplicateTest.has(uuid)) {
           console.log('duplicate uuid found in modelCatchWeights')
           console.log(uuid)
