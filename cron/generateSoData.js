@@ -24,7 +24,7 @@ const generateSoData = async source => {
     // Pull a SO line, determine if tagged or not. If tagged, need to know how many lines are tagged and what ordered number of tagged lines you are working with BECAUSE that is the only way to match up to the lot from the catch weight table. They are the same "tagged line number"
 
     // Query data
-    const lastSalesCost = getLastSalesCost()
+    const lastSalesCost = await getLastSalesCost()
     const salesOrderHeader = await getSalesOrderHeader()
     const specialPriceFile = await getSpecialPriceFile()
     const customerMaster = await getCustomerMaster()
