@@ -19,8 +19,8 @@ const getLastSalesCost = async data => {
       responses.push({
         ...line,
         lastSale: {
-          costPerLb: typeof response.rows[0] === 'undefined' ? null : response.rows[0].cost_lbs,
-          date: typeof response.rows[0] === 'undefined' ? null : response.rows[0].formatted_invoice_date,
+          costPerLb: response === null || typeof response.rows[0] === 'undefined' ? null : response.rows[0].cost_lbs,
+          date: response === null || typeof response.rows[0] === 'undefined' ? null : response.rows[0].formatted_invoice_date,
         },
       })
     }
