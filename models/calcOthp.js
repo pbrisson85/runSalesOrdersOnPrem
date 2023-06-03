@@ -86,7 +86,7 @@ const calcOthp = (salesOrderLines, othpTable_unflat, othpDefinitions_unflat) => 
       const price = othpPrices[index]
       const cost = price * multiplier
       const contra = othpTable_unflat[code].CONTRA
-      const definition = othpDefinitions_unflat[contra].definition
+      const definition = othpDefinitions_unflat[contra].category
       const ignore = othpDefinitions_unflat[contra].ignore
 
       return {
