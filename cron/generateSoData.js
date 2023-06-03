@@ -11,6 +11,7 @@ const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const modelCatchWeights = require('../models/modelCatchWeights')
 const joinData = require('../models/joinData')
 const assignCatchWeightLine = require('../models/assignCatchWeightLine')
+const calcOthp = require('../models/calcOthp')
 
 const generateSoData = async source => {
   try {
