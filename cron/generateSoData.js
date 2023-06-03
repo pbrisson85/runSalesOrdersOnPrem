@@ -33,7 +33,7 @@ const generateSoData = async source => {
 
     /* Model Data */
     const othpTable_unflat = unflattenByCompositKey(othpTable, {
-      1: 'OTHPCODE',
+      1: 'OTHP_CODE',
     })
     const othpDefinitions_unflat = unflattenByCompositKey(othpDefinitions, {
       1: 'contra',
