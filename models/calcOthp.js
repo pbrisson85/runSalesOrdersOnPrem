@@ -85,6 +85,10 @@ const calcOthp = (salesOrderLines, othpTable_unflat, othpDefinitions_unflat) => 
     const othpCodesAndPrices = othpCodes.map((code, index) => {
       const price = othpPrices[index]
       const cost = price * multiplier
+
+      console.log('code', code)
+      console.log('othpTable_unflat', othpTable_unflat)
+
       const contra = othpTable_unflat[code.trim()].CONTRA
 
       console.log('contra', contra)
