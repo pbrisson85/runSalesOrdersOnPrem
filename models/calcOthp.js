@@ -86,16 +86,10 @@ const calcOthp = (salesOrderLines, othpTable_unflat, othpDefinitions_unflat) => 
       const price = othpPrices[index]
       const cost = price * multiplier
 
-      console.log('code', code)
-      console.log('othpTable_unflat', othpTable_unflat)
+      const contra = othpTable_unflat[code.trim()][0].CONTRA
 
-      const contra = othpTable_unflat[code.trim()].CONTRA
-
-      console.log('contra', contra)
-      console.log('othpDefinitions_unflat', othpDefinitions_unflat)
-
-      const definition = othpDefinitions_unflat[contra].category
-      const ignore = othpDefinitions_unflat[contra].ignore
+      const definition = othpDefinitions_unflat[contra][0].category
+      const ignore = othpDefinitions_unflat[contra][0].ignore
 
       return {
         cost,
