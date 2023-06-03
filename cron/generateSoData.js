@@ -1,34 +1,26 @@
 const getSalesOrderlines = require('../queries/seasoft/getSalesOrderLines')
 const getSalesOrderHeader = require('../queries/seasoft/getSalesOrderHeader')
-const getCustomerMaster = require('../queries/seasoft/getCustomerMasterFile')
-const getSpecialPriceFile = require('../queries/seasoft/getSpecialPriceFile')
-const getShipToFile = require('../queries/seasoft/getShipToFile')
 const getCatchWeightLines = require('../queries/seasoft/getCatchWeightLines')
 const getNonLotCostedItems = require('../queries/seasoft/getNonLotCostedItems')
+const getOthpTable = require('../queries/seasoft/getOthpTable')
 const { getLotCosts, getAverageCosts } = require('../queries/seasoft/getInventoryLocationFile')
-
 const logEvent = require('../queries/postgres/logging')
 const getLastSalesCost = require('../queries/postgres/getLastSalesCost')
-
+const getOthpDefinitions = require('../queries/postgres/getOthpDefinitions')
 const unflattenByCompositKey = require('../models/unflattenByCompositKey')
 const modelCatchWeights = require('../models/modelCatchWeights')
 const joinData = require('../models/joinData')
 const assignCatchWeightLine = require('../models/assignCatchWeightLine')
 
 const generateSoData = async source => {
-  // build this out so that all sales order data is accessible through postgres (sales order table and an OTHP table for the sales order lines)
-
   try {
     console.log(`hit the generate sales order data function via ${source}...`)
 
-    // Pull a SO line, determine if tagged or not. If tagged, need to know how many lines are tagged and what ordered number of tagged lines you are working with BECAUSE that is the only way to match up to the lot from the catch weight table. They are the same "tagged line number"
-
-    // Query data
+    /* Query data */
+    const othpDefinitions = await getOthpDefinitions()
+    const othpTable = await getOthpTable()
     const lastSalesCost = await getLastSalesCost()
     const salesOrderHeader = await getSalesOrderHeader()
-    const specialPriceFile = await getSpecialPriceFile()
-    const customerMaster = await getCustomerMaster()
-    const shipToFile = await getShipToFile()
     let nonLotCostedItems = await getNonLotCostedItems() // if item is not lot costed then weight will be in the billed weight (tagged weight) col.
     nonLotCostedItems = nonLotCostedItems.map(item => item.ITEM_NUMBER)
     let salesOrderLines = await getSalesOrderlines()
@@ -38,7 +30,13 @@ const generateSoData = async source => {
 
     const catchWeightLines = await getCatchWeightLines(salesOrderLines) // adds sales order line number by using the tagged line number
 
-    // Model Data
+    /* Model Data */
+    const othpTable_unflat = unflattenByCompositKey(othpTable, {
+      1: 'OTHPCODE',
+    })
+    const othpDefinitions_unflat = unflattenByCompositKey(othpDefinitions, {
+      1: 'contra',
+    })
     const salesOrderHeader_unflat = unflattenByCompositKey(salesOrderHeader, {
       1: 'DOCUMENT_NUMBER',
     })
@@ -48,6 +46,12 @@ const generateSoData = async source => {
     })
     const lastSalesCost_unflat = unflattenByCompositKey(lastSalesCost, {
       1: 'item_number',
+    })
+
+    const othpCalc = calcOthp(salesOrderLines, othpTable_unflat, othpDefinitions_unflat)
+    const othpCalc_unflat = unflattenByCompositKey(othpCalc, {
+      1: 'ORDER_NUMBER',
+      2: 'LINE_NUMBER',
     })
 
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-lotNum-Loc.
@@ -60,8 +64,8 @@ const generateSoData = async source => {
       2: 'soLine',
     })
 
-    // Map Data
-    let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat)
+    /* Map Data */
+    let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat, othpCalc_unflat)
 
     // Add inventory average lot cost to each untagged line
     data = await getAverageCosts(data)
@@ -72,13 +76,11 @@ const generateSoData = async source => {
 
     // Save to DB
 
-    // THE DIFFICULT PART WILL BE MANUALLY CALCING THE OTHP. ****************************************
-
     // TESTS
     // Reconcile tagged weight: The sume of taggedLots.taggedLbs === line.TAGGED_WEIGHT
 
     console.log('cron routine complete \n')
-    return { msg: 'success', taggedInventory_unflat, catchWeightLinesModeled, catchWeightLines }
+    return { msg: 'success', data }
   } catch (error) {
     console.error(error)
 

@@ -1,4 +1,4 @@
-const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat) => {
+const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat, othpCalc_unflat) => {
   // Map the item and cost into the
 
   const mappedData = salesOrderLines.map(line => {
@@ -9,6 +9,7 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
       line,
       taggedLots: taggedInventory_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`],
       lastSalesCost: typeof lastSalesCost_unflat[ITEM_NUMBER] === 'undefined' ? null : lastSalesCost_unflat[ITEM_NUMBER][0],
+      othp: othpCalc_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`],
     }
   })
 

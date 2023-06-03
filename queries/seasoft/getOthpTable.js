@@ -2,16 +2,16 @@ const { createConnection } = require('../../database/seasoftODBC')
 const { setFlag, getFlag } = require('../../queries/postgres/flags')
 const logEvent = require('../../queries/postgres/logging')
 
-const getShipToFile = async () => {
+const getOthpTable = async () => {
   try {
     const errState = await getFlag('odbcErrorState')
     if (errState) return []
 
     const odbcConn = await createConnection()
 
-    console.log(`query ODBC for special price file ...`)
+    console.log(`query ODBC for sales General Table ...`)
 
-    const queryString = "SELECT {fn RTRIM(\"Ship-to File\".CUSTOMER_CODE)} AS CUSTOMER_CODE, {fn RTRIM(\"Ship-to File\".SHIPTO_CODE)} AS SHIPTO_CODE, {fn RTRIM(\"Ship-to File\".BROKER)} AS BROKER FROM 'Ship-to File'" //prettier-ignore
+    const queryString = "SELECT {fn RTRIM(\"General Table\".TABLE_CODE)} AS OTHP_CODE, {fn RTRIM(\"General Table\".TABLE_FLD02)} AS CONTRA FROM 'General Table' WHERE \"General Table\".TABLE_ID = 'OTHP' " //prettier-ignore
 
     const response = await odbcConn.query(queryString)
 
@@ -25,11 +25,11 @@ const getShipToFile = async () => {
 
     await logEvent({
       event_type: 'error',
-      funct: 'getShipToFile',
+      funct: 'getOthpTable',
       reason: error.message,
       note: 'flip odbcErrorState flag',
     })
   }
 }
 
-module.exports = getShipToFile
+module.exports = getOthpTable
