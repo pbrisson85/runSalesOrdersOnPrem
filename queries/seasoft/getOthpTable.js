@@ -11,7 +11,7 @@ const getOthpTable = async () => {
 
     console.log(`query ODBC for sales General Table ...`)
 
-    const queryString = "SELECT {fn RTRIM(\"General Table\".TABLE_CODE)} AS OTHP_CODE, {fn RTRIM(\"General Table\".TABLE_FLD02)} AS CONTRA FROM 'General Table' WHERE \"General Table\".TABLE_ID = 'OTHP' " //prettier-ignore
+    const queryString = "SELECT {fn RTRIM(\"General Table File\".TABLE_CODE)} AS OTHP_CODE, {fn RTRIM(\"General Table File\".TABLE_FLD02)} AS CONTRA FROM 'General Table File' WHERE \"General Table File\".TABLE_ID = 'OTHP' " //prettier-ignore
 
     const response = await odbcConn.query(queryString)
 
