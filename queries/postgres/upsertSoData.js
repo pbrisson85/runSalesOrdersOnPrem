@@ -43,7 +43,7 @@ const upsertSoData = async data => {
       const extDiscount = typeof soLine.othp.discount === 'undefined' ? 0 : soLine.othp.discount
       const extFreightOut = typeof soLine.othp.freight === 'undefined' ? 0 : soLine.othp.freight
       const extCommission = typeof soLine.othp.commission === 'undefined' ? 0 : soLine.othp.commission
-      const extOthp = soLine.othp.total
+      const extOthp = typeof soLine.othp.total === 'undefined' ? 0 : soLine.othp.total
       const aveCostPerLb = soLine.cost.weightedAveCost
       const extendedCost = soLine.cost.extendedCost
       const usedLastCost = soLine.cost.usedLastCost
