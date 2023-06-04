@@ -18,14 +18,14 @@ const upsertSoData = async data => {
       const truckRoute = soLine.header.TRUCK_ROUTE
       const enteredBy = soLine.header.ENTERED_BY_CODE
       const creditStatus = soLine.header.CREDIT_STATUS_FLAG
-      const shipToCode = soLine.header.SHIP_TO_CODE
+      const shipToCode = soLine.header.SHIPTO_CODE
       const customerTermsCode = soLine.header.CUSTOMER_TERMS_CODE
       const shipMethod = soLine.header.SHIP_METHOD
       const fob = soLine.header.FOB
       const carrier = soLine.header.CARRIER
       const soLineNum = soLine.line.LINE_NUMBER
       const itemNum = soLine.line.ITEM_NUMBER
-      const lineQty = soLine.line.QUANTITY_ORDERED
+      const lineQty = soLine.line.QTY_ORDERED
       const unitPrice = soLine.line.LIST_PRICE
       const taxable = soLine.line.TAXABLE === 'Y' ? true : false
       const extSales = soLine.line.EXTENDED_SALES + soLine.line.EXTENDED_SALES_TAXABLE
