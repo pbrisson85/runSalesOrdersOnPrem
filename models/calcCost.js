@@ -17,6 +17,12 @@ const calcCost = data => {
     let aveTaggedCost = 0
     if (soline.line.TAGGED_WEIGHT !== 0) {
       // Get ave inventory cost for tagged weight
+
+      if (typeof soline.taggedLots === 'undefined') {
+        console.log('soline.taggedLots is undefined')
+        console.log(soline)
+      }
+
       soline.taggedLots.forEach(lot => {
         aveTaggedCost += (parseFloat(lot.taggedLbs) / soline.line.TAGGED_WEIGHT) * lot.LAST_COST
       })
