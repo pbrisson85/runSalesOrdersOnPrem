@@ -1,4 +1,6 @@
 const calcCost = data => {
+  console.log('hit the calcCost function...')
+
   data.forEach((soline, lineIx) => {
     // level of priority:
     // 1. lots tagged
@@ -15,7 +17,7 @@ const calcCost = data => {
     let aveTaggedCost = 0
     if (soline.line.TAGGED_WEIGHT !== 0) {
       // Get ave inventory cost for tagged weight
-      soline.line.taggedLots.forEach(lot => {
+      soline.taggedLots.forEach(lot => {
         aveTaggedCost += (parseFloat(lot.taggedLbs) / soline.line.TAGGED_WEIGHT) * lot.LAST_COST
       })
     }
