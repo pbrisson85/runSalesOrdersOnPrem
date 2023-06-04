@@ -108,7 +108,7 @@ const upsertSoData = async data => {
             extCommission,
             parseInt(maxVersionNumber) + 1,
             Date.now(),
-            Date.now(),
+            new Date(),
           ]
         )
       )
