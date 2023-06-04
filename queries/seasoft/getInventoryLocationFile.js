@@ -27,7 +27,7 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
 
       // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
 
-      responses.push({ ...response[0], taggedLbs: lbs, taggedQty: qty, so_num, soLine })
+      responses.push({ ...response[0], taggedLbs: parseFloat(lbs), taggedQty: qty, so_num, soLine })
     }
 
     await odbcConn.close()
