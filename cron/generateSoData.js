@@ -13,7 +13,7 @@ const joinData = require('../models/joinData')
 const assignCatchWeightLine = require('../models/assignCatchWeightLine')
 const calcOthp = require('../models/calcOthp')
 const calcCost = require('../models/calcCost')
-const upsertSoData = require('../queries/postgres/upsertSoData')
+const insertSoData = require('../queries/postgres/insertSoData')
 
 const generateSoData = async source => {
   try {
@@ -76,12 +76,12 @@ const generateSoData = async source => {
     // Add cost to each line
     data = calcCost(data)
 
-    await upsertSoData(data)
-    // Save to DB ************ need to work on the cost data
+    // Save to DB
+    await insertSoData(data)
 
     // TESTS
     // Reconcile tagged weight: The sume of taggedLots.taggedLbs === line.TAGGED_WEIGHT
-    // Still need to write a sub table of each tagged lot and each OTHP line ***********
+    // STILL NEED A SUB TABLE FOR EACH TAGGED LOT AND EACH OTHP LINE ***
 
     console.log('cron routine complete \n')
     return { msg: 'success', data }

@@ -1,6 +1,6 @@
 const logEvent = require('./logging')
 
-const upsertSoData = async data => {
+const insertSoData = async data => {
   try {
     const { Client } = require('pg')
     const pgClient = new Client() // config from ENV
@@ -155,4 +155,4 @@ const upsertSoData = async data => {
   }
 }
 
-module.exports = upsertSoData
+module.exports = insertSoData
