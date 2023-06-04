@@ -24,7 +24,7 @@ const calcCost = data => {
       })
 
       // DEBUG *****************
-      if (soline.DOCUMENT_NUMBER === '366164') {
+      if (soline.line.ORDER_NUMBER === '366164') {
         console.log('parseFloat(lot.taggedLbs): ', parseFloat(lot.taggedLbs))
         console.log('soline.line.TAGGED_WEIGHT: ', soline.line.TAGGED_WEIGHT)
         console.log('ratio: ', parseFloat(lot.taggedLbs) / soline.line.TAGGED_WEIGHT)
