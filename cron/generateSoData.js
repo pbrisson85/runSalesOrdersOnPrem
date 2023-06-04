@@ -12,6 +12,7 @@ const modelCatchWeights = require('../models/modelCatchWeights')
 const joinData = require('../models/joinData')
 const assignCatchWeightLine = require('../models/assignCatchWeightLine')
 const calcOthp = require('../models/calcOthp')
+const calcCost = require('../models/calcCost')
 
 const generateSoData = async source => {
   try {
@@ -71,9 +72,8 @@ const generateSoData = async source => {
     // Add inventory average lot cost to each untagged line
     data = await getAverageCosts(data)
 
-    return data
-
-    // Need a warning col for (no cost, no freight, old cost)
+    // Add cost to each line
+    data = calcCost(data)
 
     // Save to DB
 
