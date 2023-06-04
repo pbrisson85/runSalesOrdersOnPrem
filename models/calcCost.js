@@ -22,6 +22,15 @@ const calcCost = data => {
       soline.taggedLots.forEach(lot => {
         aveTaggedCost += (parseFloat(lot.taggedLbs) / soline.line.TAGGED_WEIGHT) * lot.LAST_COST
       })
+
+      // DEBUG *****************
+      if (soline.DOCUMENT_NUMBER === '366164') {
+        console.log('parseFloat(lot.taggedLbs): ', parseFloat(lot.taggedLbs))
+        console.log('soline.line.TAGGED_WEIGHT: ', soline.line.TAGGED_WEIGHT)
+        console.log('ratio: ', parseFloat(lot.taggedLbs) / soline.line.TAGGED_WEIGHT)
+        console.log('lot.LAST_COST: ', lot.LAST_COST)
+        console.log('aveTaggedCost: ', aveTaggedCost)
+      }
     }
 
     // Calc untagged weight ave cost/lb
