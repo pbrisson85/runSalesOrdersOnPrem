@@ -32,7 +32,7 @@ const upsertSoData = async data => {
       const pricingUnit = soLine.line.PRICING_UNIT
       const location = soLine.line.LOCATION
       const weightPerUm = soLine.line.WEIGHT_PER_UM
-      const extWeight = soLine.line.EXTENDED_WEIGHT
+      const extWeight = soLine.line.LINE_WEIGHT
       const taggedWeight = soLine.line.TAGGED_WEIGHT
       const untaggedWeight = soLine.line.UNTAGGED_WEIGHT
       const remark1 = soLine.line.REL_REMARK_1
