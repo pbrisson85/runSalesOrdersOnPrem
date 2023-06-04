@@ -21,15 +21,6 @@ const calcCost = data => {
 
       soline.taggedLots.forEach(lot => {
         aveTaggedCost += (lot.taggedLbs / soline.line.TAGGED_WEIGHT) * lot.LAST_COST
-
-        // DEBUG *****************
-        if (soline.line.ORDER_NUMBER === '366164') {
-          console.log('lot.taggedLbs: ', lot.taggedLbs)
-          console.log('soline.line.TAGGED_WEIGHT: ', soline.line.TAGGED_WEIGHT)
-          console.log('ratio: ', lot.taggedLbs / soline.line.TAGGED_WEIGHT)
-          console.log('lot.LAST_COST: ', lot.LAST_COST)
-          console.log('aveTaggedCost: ', aveTaggedCost)
-        }
       })
     }
 
