@@ -15,13 +15,9 @@ const calcCost = data => {
 
     // Calc tagged weight ave cost/lb
     let aveTaggedCost = 0
-    if (soline.line.TAGGED_WEIGHT !== 0) {
+    if (soline.line.isTagged) {
+      // Note using the isTagged flag because the line may have a tagged weight but no tagged lots if it is not a lot tracked item.
       // Get ave inventory cost for tagged weight
-
-      if (typeof soline.taggedLots === 'undefined') {
-        console.log('soline.taggedLots is undefined')
-        console.log(soline)
-      }
 
       soline.taggedLots.forEach(lot => {
         aveTaggedCost += (parseFloat(lot.taggedLbs) / soline.line.TAGGED_WEIGHT) * lot.LAST_COST
@@ -46,8 +42,6 @@ const calcCost = data => {
           if (diffDays > 365) {
             CostOutdatedOverYear = true
           }
-        } else {
-          noCostFound = true
         }
       }
     }
@@ -57,6 +51,9 @@ const calcCost = data => {
     const weightedAveUntaggedCost = (soline.line.UNTAGGED_WEIGHT / soline.line.LINE_WEIGHT) * aveUntaggedCost
     const weightedAveCost = weightedAveTaggedCost + weightedAveUntaggedCost
     const extendedCost = weightedAveCost * soline.line.LINE_WEIGHT
+    if (extendedCost === 0) {
+      noCostFound = true
+    }
 
     // Add cost to line
     data[lineIx].cost = {
