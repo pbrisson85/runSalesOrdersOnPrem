@@ -14,6 +14,9 @@ const assignCatchWeightLine = require('../models/assignCatchWeightLine')
 const calcOthp = require('../models/calcOthp')
 const calcCost = require('../models/calcCost')
 const insertSoData = require('../queries/postgres/insertSoData')
+const getPeriodsByDay = require('../queries/postgres/getAccountingPeriodsByDay')
+const getSoDateRange = require('../models/getSoDateRange')
+const mapPeriodsPerDay = require('../models/mapPeriodsPerDay')
 
 const generateSoData = async source => {
   try {
@@ -24,16 +27,17 @@ const generateSoData = async source => {
     const othpTable = await getOthpTable()
     const lastSalesCost = await getLastSalesCost()
     const salesOrderHeader = await getSalesOrderHeader()
+    const soDateRange = getSoDateRange(salesOrderHeader) // get date range from sales order header
     let nonLotCostedItems = await getNonLotCostedItems() // if item is not lot costed then weight will be in the billed weight (tagged weight) col.
     nonLotCostedItems = nonLotCostedItems.map(item => item.ITEM_NUMBER)
     let salesOrderLines = await getSalesOrderlines()
-
-    // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
-    salesOrderLines = assignCatchWeightLine(salesOrderLines, nonLotCostedItems)
-
+    const periodsByDay = await getPeriodsByDay(soDateRange)
+    salesOrderLines = assignCatchWeightLine(salesOrderLines, nonLotCostedItems) // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
     const catchWeightLines = await getCatchWeightLines(salesOrderLines) // adds sales order line number by using the tagged line number
 
     /* Model Data */
+    const mappedPeriods = mapPeriodsPerDay(periodsByDay)
+
     const othpTable_unflat = unflattenByCompositKey(othpTable, {
       1: 'OTHP_CODE',
     })
@@ -68,7 +72,7 @@ const generateSoData = async source => {
     })
 
     /* Map Data */
-    let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat, othpCalc_unflat)
+    let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat, othpCalc_unflat, mappedPeriods)
 
     // Add inventory average lot cost to each untagged line
     data = await getAverageCosts(data)
