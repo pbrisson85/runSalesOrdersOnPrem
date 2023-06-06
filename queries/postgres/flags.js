@@ -6,7 +6,7 @@ const getFlag = async flag_id => {
     const pgClient = new Client() // config from ENV
     await pgClient.connect()
 
-    console.log(`query postgres to GET ${flag_id} busy flag ...`)
+    // console.log(`query postgres to GET ${flag_id} busy flag ...`)
 
     const response = await pgClient.query('SELECT value FROM "salesReporting".flags WHERE id = $1', [flag_id])
 
@@ -32,7 +32,7 @@ const setFlag = async (flag_id, bool) => {
     const pgClient = new Client() // config from ENV
     await pgClient.connect()
 
-    console.log(`query postgres to SET ${flag_id} busy flag to ${bool} ...`)
+    // console.log(`query postgres to SET ${flag_id} busy flag to ${bool} ...`)
 
     await pgClient.query('UPDATE "salesReporting".flags SET value = $2 WHERE id = $1', [flag_id, bool])
 
