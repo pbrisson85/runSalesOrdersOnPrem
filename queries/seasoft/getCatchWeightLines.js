@@ -13,6 +13,7 @@ const getCatchWeightLines = async orders => {
 
     let responses = []
     let index = 0
+    let renumberTaggedLineNum = {}
 
     for (eachOrderLine of orders) {
       const { ORDER_NUMBER, taggedLineNum, isTagged, LINE_NUMBER } = eachOrderLine
@@ -23,15 +24,43 @@ const getCatchWeightLines = async orders => {
 
       const response = await odbcConn.query(queryString, [ORDER_NUMBER])
 
+      // Some orders are lot tracked and showing billed weight indicating they are tagged. However, the catch weight lines are not showing up in the catch weight table. I don;t know why this is happeneing but this section tests if the catch weight line is found. If not, then the order is not tagged. Also the taggedLineNum is tracked and offset for subsequent lines on the same order
       if (typeof response[taggedLineNum] === 'undefined') {
         console.log('no catch weight line found for order: ', ORDER_NUMBER, ' and line: ', LINE_NUMBER, ' and taggedLineNum: ', taggedLineNum)
 
         // flip isTagged flag to false
         orders[index - 1].isTagged = false
 
+        // Need to re-number the taggedLineNums for this SO#
+        if (typeof renumberTaggedLineNum[ORDER_NUMBER] === 'undefined') {
+          renumberTaggedLineNum[ORDER_NUMBER] = { offset: 1, initialTaggedLineNum: taggedLineNum }
+        } else {
+          renumberTaggedLineNum[ORDER_NUMBER].offset++
+        }
+
         continue
       } else {
-        responses.push({ ...response[taggedLineNum], soLine: LINE_NUMBER })
+        // re-number the taggedLineNums for this SO#
+        if (typeof renumberTaggedLineNum[ORDER_NUMBER] === 'undefined') {
+          responses.push({ ...response[taggedLineNum], soLine: LINE_NUMBER }) // proceed as normal
+        } else {
+          // re-number the taggedLineNums for this SO#
+
+          if (taggedLineNum < renumberTaggedLineNum[ORDER_NUMBER].initialTaggedLineNum) {
+            // make sure the taggedLineNum is not less than the initialTaggedLineNum
+            console.log(
+              'this order has a tagged line num offset but it is for a line AFTER the current line: ', ORDER_NUMBER, ' and line: ', LINE_NUMBER, ' and taggedLineNum: ', taggedLineNum
+            ) //prettier-ignore
+
+            responses.push({ ...response[taggedLineNum], soLine: LINE_NUMBER }) // proceed as normal
+          } else {
+            console.log(
+              'offsetting the taggedLineNum for order: ', ORDER_NUMBER, ' and line: ', LINE_NUMBER, ' and taggedLineNum: ', taggedLineNum, ' by: ', renumberTaggedLineNum[ORDER_NUMBER].offset
+            ) //prettier-ignore
+
+            responses.push({ ...response[taggedLineNum - renumberTaggedLineNum[ORDER_NUMBER].offset], soLine: LINE_NUMBER }) // offset the taggedLineNum
+          }
+        }
       }
     }
 
