@@ -8,13 +8,11 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
     const taggedLots = taggedInventory_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`]
     const lastSalesCost = typeof lastSalesCost_unflat[ITEM_NUMBER] === 'undefined' ? null : lastSalesCost_unflat[ITEM_NUMBER][0]
     const othp = othpCalc_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`]
-
-    const dateArr = header.SCHEDULED_SHIP_DATE.split('-')
-    // result: [yyyy,m,d]
-
+    const dateArr = header.SCHEDULED_SHIP_DATE.split('-') // result: [yyyy,m,d]
     const shipDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2], 0, 0, 0, 0).toLocaleString('en-US', {
       timeZone: 'America/New_York',
     })
+    const period = mappedPeriods[shipDate]
 
     return {
       header,
@@ -22,7 +20,7 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
       taggedLots,
       lastSalesCost,
       othp,
-      period: mappedPeriods[shipDate],
+      period,
     }
   })
 
