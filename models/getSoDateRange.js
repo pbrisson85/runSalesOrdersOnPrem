@@ -5,12 +5,12 @@ const getSoDateRange = soHeader => {
 
     console.log('dateA', dateA)
     console.log('dateB', dateB)
-    console.log('dateA < dateB', dateA < dateB)
-    console.log('dateA > dateB', dateA > dateB)
-    console.log('dateA === dateB', dateA === dateB)
+    console.log('dateA < dateB', dateA.getTime() < dateB.getTime())
+    console.log('dateA > dateB', dateA.getTime() > dateB.getTime())
+    console.log('dateA === dateB', dateA.getTime() === dateB.getTime())
 
-    if (dateA < dateB) return -1
-    if (dateA > dateB) return 1
+    if (dateA.getTime() < dateB.getTime()) return -1
+    if (dateA.getTime() > dateB.getTime()) return 1
     return 0
   })
 
