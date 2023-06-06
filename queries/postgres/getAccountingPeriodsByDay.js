@@ -12,8 +12,6 @@ const getAccountingPeriodsByDay = async soDateRange => {
 
   await pgClient.end()
 
-  console.log('periodsByDay', periodsByDay)
-
   return periodsByDay.rows
 }
 

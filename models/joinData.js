@@ -23,8 +23,6 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
     }
   })
 
-  console.log('mappedPeriods', mappedPeriods)
-
   return mappedData
 }
 

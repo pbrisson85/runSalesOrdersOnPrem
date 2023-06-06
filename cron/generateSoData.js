@@ -88,8 +88,10 @@ const generateSoData = async source => {
     // Reconcile tagged weight: The sume of taggedLots.taggedLbs === line.TAGGED_WEIGHT
     // STILL NEED A SUB TABLE FOR EACH TAGGED LOT AND EACH OTHP LINE ***
 
+    const missingPeriod = data.filter(line => typeof line.period === 'undefined')
+
     console.log('cron routine complete \n')
-    return { msg: 'success', data }
+    return { msg: 'success', missingPeriod }
   } catch (error) {
     console.error(error)
 
