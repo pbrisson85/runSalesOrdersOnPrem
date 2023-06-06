@@ -7,9 +7,12 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
     const dateArr = line.SCHEDULED_SHIP_DATE.split('-')
     // result: [yyyy,m,d]
 
-    const invoiceDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2], 0, 0, 0, 0).toLocaleString('en-US', {
+    const shipDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2], 0, 0, 0, 0).toLocaleString('en-US', {
       timeZone: 'America/New_York',
     })
+
+    console.log('mappedPeriods', mappedPeriods[0])
+    console.log('shipDate', shipDate)
 
     return {
       header: salesOrderHeader_unflat[ORDER_NUMBER][0],
@@ -17,7 +20,7 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
       taggedLots: taggedInventory_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`],
       lastSalesCost: typeof lastSalesCost_unflat[ITEM_NUMBER] === 'undefined' ? null : lastSalesCost_unflat[ITEM_NUMBER][0],
       othp: othpCalc_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`],
-      period: mappedPeriods[invoiceDate],
+      period: mappedPeriods[shipDate],
     }
   })
 
