@@ -30,13 +30,7 @@ const calcCost = data => {
       if (typeof soline.inventory !== 'undefined' && parseInt(soline.inventory.aveOnHandCostPerLb) !== 0 && soline.inventory.aveOnHandCostPerLb !== null) {
         aveUntaggedCost = soline.inventory.aveOnHandCostPerLb
       } else {
-        if (typeof soline.lastSalesCost !== 'undefined') {
-
-          if (soline.lastSalesCost === null) {
-
-            console.log(soline)
-          }
-
+        if (typeof soline.lastSalesCost !== 'undefined' && soline.lastSalesCost !== null) {
           aveUntaggedCost = soline.lastSalesCost.cost_lb
           usedLastCost = true
           lastCostDate = soline.lastSalesCost.formatted_invoice_date
