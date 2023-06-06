@@ -9,9 +9,6 @@ const getSoDateRange = soHeader => {
   const firstDate = sorted[0].SCHEDULED_SHIP_DATE
   const lastDate = sorted[sorted.length - 1].SCHEDULED_SHIP_DATE
 
-  console.log('firstDate', firstDate)
-  console.log('lastDate', lastDate)
-
   return { firstDate, lastDate }
 }
 
