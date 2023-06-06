@@ -11,8 +11,6 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
       timeZone: 'America/New_York',
     })
 
-    console.log('shipDate', shipDate)
-
     return {
       header: salesOrderHeader_unflat[ORDER_NUMBER][0],
       line,
