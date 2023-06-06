@@ -11,7 +11,7 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
       timeZone: 'America/New_York',
     })
 
-    console.log('mappedPeriods', mappedPeriods[0])
+    console.log('mappedPeriods', mappedPeriods)
     console.log('shipDate', shipDate)
 
     return {
