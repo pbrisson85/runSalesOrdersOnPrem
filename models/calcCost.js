@@ -27,7 +27,7 @@ const calcCost = data => {
     // Calc untagged weight ave cost/lb
     let aveUntaggedCost = 0
     if (soline.line.UNTAGGED_WEIGHT !== 0) {
-      if (typeof soline.inventory !== 'undefined') {
+      if (typeof soline.inventory !== 'undefined' && parseInt(soline.inventory.aveOnHandCostPerLb) !== 0) {
         aveUntaggedCost = soline.inventory.aveOnHandCostPerLb
       } else {
         if (typeof soline.lastSalesCost !== 'undefined') {
