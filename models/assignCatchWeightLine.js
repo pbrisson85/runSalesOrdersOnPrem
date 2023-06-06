@@ -8,7 +8,7 @@ const assignCatchWeightLine = (salesOrderLines, nonLotCostedItems) => {
 
     if (ix === 0) soNum = ORDER_NUMBER // initialize soNum
 
-    const lotCosted = !nonLotCostedItems.includes(ITEM_NUMBER)
+    const lotCosted = !nonLotCostedItems.includes(ITEM_NUMBER) // Not actually lot costed. Just lot tracked.
     const isTagged = TAGGED_WEIGHT > 0 && lotCosted
 
     if (soNum !== ORDER_NUMBER) {
