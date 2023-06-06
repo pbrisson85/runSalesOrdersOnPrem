@@ -4,7 +4,7 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
   const mappedData = salesOrderLines.map(line => {
     const { LINE_NUMBER, ORDER_NUMBER, ITEM_NUMBER } = line
 
-    const dateArr = invoiceLine.SCHEDULED_SHIP_DATE.split('-')
+    const dateArr = line.SCHEDULED_SHIP_DATE.split('-')
     // result: [yyyy,m,d]
 
     const invoiceDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2], 0, 0, 0, 0).toLocaleString('en-US', {
