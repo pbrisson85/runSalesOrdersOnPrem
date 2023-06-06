@@ -32,6 +32,9 @@ const generateSoData = async source => {
     nonLotCostedItems = nonLotCostedItems.map(item => item.ITEM_NUMBER)
     let salesOrderLines = await getSalesOrderlines()
     const periodsByDay = await getPeriodsByDay(soDateRange)
+
+    return periodsByDay
+
     salesOrderLines = assignCatchWeightLine(salesOrderLines, nonLotCostedItems) // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
     const catchWeightLines = await getCatchWeightLines(salesOrderLines) // adds sales order line number by using the tagged line number
 
