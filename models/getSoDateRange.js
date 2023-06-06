@@ -9,9 +9,7 @@ const getSoDateRange = soHeader => {
     console.log('dateA > dateB', dateA.getTime() > dateB.getTime())
     console.log('dateA === dateB', dateA.getTime() === dateB.getTime())
 
-    if (dateA.getTime() < dateB.getTime()) return -1
-    if (dateA.getTime() > dateB.getTime()) return 1
-    return 0
+    return dateA.getTime() - dateB.getTime()
   })
 
   const firstDate = soHeader[0].SCHEDULED_SHIP_DATE
