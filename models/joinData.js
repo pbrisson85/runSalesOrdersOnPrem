@@ -14,6 +14,11 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
     })
     const period = mappedPeriods[shipDate]
 
+    if (ORDER_NUMBER === '366685') {
+      console.log('ITEM_NUMBER: ', ITEM_NUMBER)
+      console.log('lastSalesCost: ', lastSalesCost)
+    }
+
     return {
       header,
       line,
