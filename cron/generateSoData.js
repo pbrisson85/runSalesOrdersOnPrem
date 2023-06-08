@@ -38,7 +38,6 @@ const generateSoData = async source => {
 
     /* Model Data */
     const mappedPeriods = mapPeriodsPerDay(periodsByDay)
-
     const othpTable_unflat = unflattenByCompositKey(othpTable, {
       1: 'OTHP_CODE',
     })
@@ -55,18 +54,14 @@ const generateSoData = async source => {
     const lastSalesCost_unflat = unflattenByCompositKey(lastSalesCost, {
       1: 'item_number',
     })
-
     const othpCalc = calcOthp(salesOrderLines, othpTable_unflat, othpDefinitions_unflat)
     const othpCalc_unflat = unflattenByCompositKey(othpCalc, {
       1: 'ORDER_NUMBER',
       2: 'LINE_NUMBER',
     })
-
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-lotNum-Loc.
-
     // Use catch weight lines lot and location, along with sales order line itemNum to find The inventory cost:
     const taggedInventory = await getLotCosts(catchWeightLinesModeled, salesOrderLines_unflat)
-
     const taggedInventory_unflat = unflattenByCompositKey(taggedInventory, {
       1: 'so_num',
       2: 'soLine',
