@@ -63,13 +63,8 @@ const insertSoData = async data => {
       const week = parseInt(soLine.period.week)
       const period_serial = soLine.period.period_serial
       const week_serial = soLine.period.week_serial
-
-      // New fields
       const aveTaggedCost = soLine.cost.aveTaggedCost
       const aveUntaggedCost = soLine.cost.aveUntaggedCost
-
-      console.log('aveTaggedCost', aveTaggedCost)
-      console.log('aveUntaggedCost', aveUntaggedCost)
 
       // NEED TO CALC THE COST
 
