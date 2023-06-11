@@ -68,6 +68,9 @@ const insertSoData = async data => {
       const aveTaggedCost = soLine.cost.aveTaggedCost
       const aveUntaggedCost = soLine.cost.aveUntaggedCost
 
+      console.log('aveTaggedCost', aveTaggedCost)
+      console.log('aveUntaggedCost', aveUntaggedCost)
+
       // NEED TO CALC THE COST
 
       promises.push(

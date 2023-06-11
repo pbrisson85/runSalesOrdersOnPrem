@@ -55,14 +55,17 @@ const calcCost = data => {
       noCostFound = true
     }
 
+    console.log('aveTaggedCost', aveTaggedCost)
+    console.log('aveUntaggedCost', aveUntaggedCost)
+
     // Add cost to line
     data[lineIx].cost = {
       usedLastCost,
       lastCostDate,
       CostOutdatedOverYear,
       noCostFound,
-      weightedAveTaggedCost,
-      weightedAveUntaggedCost,
+      aveTaggedCost,
+      aveUntaggedCost,
       weightedAveCost,
       extendedCost,
     }
