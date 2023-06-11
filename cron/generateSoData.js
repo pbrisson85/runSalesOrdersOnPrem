@@ -17,6 +17,7 @@ const insertSoData = require('../queries/postgres/insertSoData')
 const getPeriodsByDay = require('../queries/postgres/getAccountingPeriodsByDay')
 const getSoDateRange = require('../models/getSoDateRange')
 const mapPeriodsPerDay = require('../models/mapPeriodsPerDay')
+const insertTaggedInventory = require('../queries/postgres/insertTaggedInvenData')
 
 const generateSoData = async source => {
   try {
@@ -78,6 +79,7 @@ const generateSoData = async source => {
 
     // Save to DB
     await insertSoData(data)
+    await insertTaggedInventory(taggedInventory)
 
     // TESTS
     // Reconcile tagged weight: The sume of taggedLots.taggedLbs === line.TAGGED_WEIGHT
