@@ -86,7 +86,7 @@ const generateSoData = async source => {
     // STILL NEED A SUB TABLE FOR EACH TAGGED LOT AND EACH OTHP LINE ***
 
     console.log('cron routine complete \n')
-    return { msg: 'success', taggedInventory_unflat }
+    return { msg: 'success', taggedInventory, data }
   } catch (error) {
     console.error(error)
 
