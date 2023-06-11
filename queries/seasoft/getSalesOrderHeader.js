@@ -17,7 +17,7 @@ const getSalesOrderHeader = async () => {
 
     await odbcConn.close()
 
-    return response
+    return response 
   } catch (error) {
     console.error(error)
 

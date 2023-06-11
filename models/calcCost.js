@@ -61,6 +61,8 @@ const calcCost = data => {
       lastCostDate,
       CostOutdatedOverYear,
       noCostFound,
+      weightedAveTaggedCost,
+      weightedAveUntaggedCost,
       weightedAveCost,
       extendedCost,
     }
