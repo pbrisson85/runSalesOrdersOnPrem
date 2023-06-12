@@ -83,10 +83,10 @@ const generateSoData = async source => {
 
     // TESTS
     // Reconcile tagged weight: The sume of taggedLots.taggedLbs === line.TAGGED_WEIGHT
-    // STILL NEED A SUB TABLE FOR EACH TAGGED LOT AND EACH OTHP LINE ***
+    // STILL NEED A SUB TABLE FOR EACH OTHP LINE ***
 
     console.log('cron routine complete \n')
-    return { msg: 'success', lastSalesCost_unflat }
+    return { msg: 'success', data }
   } catch (error) {
     console.error(error)
 
