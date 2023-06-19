@@ -8,9 +8,7 @@ const getOthpDefinitions = async () => {
 
     console.log(`query postgres to GET othp definitions ...`)
 
-    const response = await pgClient.query(
-      'SELECT othp_definitions.contra, othp_definitions.category, othp_definitions.ignore FROM "salesReporting".othp_definitions'
-    )
+    const response = await pgClient.query('SELECT othp_definitions.contra, othp_definitions.category FROM "salesReporting".contra_sales_gl_map')
 
     await pgClient.end()
 
