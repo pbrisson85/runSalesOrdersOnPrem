@@ -65,9 +65,14 @@ const getAverageCosts = async data => {
     let responses = []
 
     for (line of data) {
+      console.log('line: ', line)
+      console.log('line.line.ITEM_NUMBER: ', line.line.ITEM_NUMBER)
+
       const queryString_1 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT) AS lbs_on_hand, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT * \"Inventory Location File\".LAST_COST) AS cost_on_hand FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
 
       const aveCostResponse = await odbcConn.query(queryString_1, [line.line.ITEM_NUMBER])
+
+      console.log('aveCostResponse: ', aveCostResponse)
 
       responses.push({
         ...line,
@@ -84,13 +89,14 @@ const getAverageCosts = async data => {
 
     return responses
   } catch (error) {
+    console.log('error in getAverageCosts: ', error)
     console.error(error)
 
     setFlag('odbcErrorState', true) // set flag to prevent further requests
 
     await logEvent({
       event_type: 'error',
-      funct: 'getInventoryLocationFile',
+      funct: 'getAverageCosts',
       reason: error.message,
       note: 'flip odbcErrorState flag',
     })
