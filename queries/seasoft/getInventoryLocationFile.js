@@ -65,9 +65,6 @@ const getAverageCosts = async data => {
     let responses = []
 
     for (line of data) {
-      console.log('line: ', line)
-      console.log('line.line.ITEM_NUMBER: ', line.line.ITEM_NUMBER)
-
       /*
 
       Note: I was using this query but seasoft was incurring a weird segmentation fault on ONE item with this query. I tested manually and could pull the data, could do the sums and multiplications except when multiplying for the cost_on_hand there was an internal seasoft error. I tried to use an alternative ODBC but same issue so proof that the bug was within seasoft. Remedy is to pull data and manually do the calculations in node. I'm leaving the query here for reference.
@@ -76,7 +73,7 @@ const getAverageCosts = async data => {
       const queryString_1 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT) AS lbs_on_hand, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT * \"Inventory Location File\".LAST_COST) AS cost_on_hand FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
       */
 
-      const queryString_1 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, \"Inventory Location File\".ON_HAND_IN_UM, \"Inventory Location File\".LOT_AVERAGE_WEIGHT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
+      const queryString_1 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, \"Inventory Location File\".ON_HAND_IN_UM, \"Inventory Location File\".LOT_AVERAGE_WEIGHT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ?" //prettier-ignore
 
       const aveCostResponse = await odbcConn.query(queryString_1, [line.line.ITEM_NUMBER])
 
