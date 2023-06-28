@@ -68,19 +68,34 @@ const getAverageCosts = async data => {
       console.log('line: ', line)
       console.log('line.line.ITEM_NUMBER: ', line.line.ITEM_NUMBER)
 
+      /*
+
+      Note: I was using this query but seasoft was incurring a weird segmentation fault on ONE item with this query. I tested manually and could pull the data, could do the sums and multiplications except when multiplying for the cost_on_hand there was an internal seasoft error. I tried to use an alternative ODBC but same issue so proof that the bug was within seasoft. Remedy is to pull data and manually do the calculations in node. I'm leaving the query here for reference.
+
+
       const queryString_1 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT) AS lbs_on_hand, SUM(\"Inventory Location File\".ON_HAND_IN_UM * \"Inventory Location File\".LOT_AVERAGE_WEIGHT * \"Inventory Location File\".LAST_COST) AS cost_on_hand FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
+      */
+
+      const queryString_1 = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, \"Inventory Location File\".ON_HAND_IN_UM, \"Inventory Location File\".LOT_AVERAGE_WEIGHT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".ITEM_NUMBER = ? GROUP BY \"Inventory Location File\".ITEM_NUMBER" //prettier-ignore
 
       const aveCostResponse = await odbcConn.query(queryString_1, [line.line.ITEM_NUMBER])
 
-      console.log('aveCostResponse: ', aveCostResponse)
+      // manually calc the lbs_on_hand and cost_on_hand
+
+      let lbs_on_hand = 0
+      let cost_on_hand = 0
+
+      for (item of aveCostResponse) {
+        lbs_on_hand += item.ON_HAND_IN_UM * item.LOT_AVERAGE_WEIGHT
+        cost_on_hand += item.ON_HAND_IN_UM * item.LOT_AVERAGE_WEIGHT * item.LAST_COST
+      }
 
       responses.push({
         ...line,
         inventory: {
-          costOnHand: typeof aveCostResponse[0] === 'undefined' ? null : aveCostResponse[0]?.cost_on_hand,
-          lbsOnHand: typeof aveCostResponse[0] === 'undefined' ? null : aveCostResponse[0]?.lbs_on_hand,
-          aveOnHandCostPerLb:
-            typeof aveCostResponse[0] === 'undefined' ? null : aveCostResponse[0]?.cost_on_hand / aveCostResponse[0]?.lbs_on_hand,
+          costOnHand: (cost_on_hand = 0 ? null : cost_on_hand),
+          lbsOnHand: (lbs_on_hand = 0 ? null : lbs_on_hand),
+          aveOnHandCostPerLb: (lbs_on_hand = 0 ? null : cost_on_hand / lbs_on_hand),
         },
       })
     }
