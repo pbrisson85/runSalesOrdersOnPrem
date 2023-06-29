@@ -86,20 +86,20 @@ const getAverageCosts = async data => {
         lbs_on_hand += item.ON_HAND_IN_UM * item.LOT_AVERAGE_WEIGHT
         cost_on_hand += item.ON_HAND_IN_UM * item.LOT_AVERAGE_WEIGHT * item.LAST_COST
 
-        // if (item.ITEM_NUMBER === '9310025B') {
-        //   console.log('item.ON_HAND_IN_UM', item.ON_HAND_IN_UM)
-        //   console.log('item.LOT_AVERAGE_WEIGHT', item.LOT_AVERAGE_WEIGHT)
-        //   console.log('item.LAST_COST', item.LAST_COST)
-        //   console.log('lbs_on_hand', lbs_on_hand)
-        //   console.log('cost_on_hand', cost_on_hand)
-        // }
+        if (line.line.ORDER_NUMBER === '368681') {
+          console.log('line.line.LINE_NUMBER', line.line.LINE_NUMBER)
+          console.log('item.ON_HAND_IN_UM', item.ON_HAND_IN_UM)
+          console.log('item.LOT_AVERAGE_WEIGHT', item.LOT_AVERAGE_WEIGHT)
+          console.log('item.LAST_COST', item.LAST_COST)
+          console.log('lbs_on_hand', lbs_on_hand)
+          console.log('cost_on_hand', cost_on_hand)
+        }
       }
 
-      if (line.line.ORDER_NUMBER === '368681') {
-        console.log(aveCostResponse)
-        console.log('lbs_on_hand', lbs_on_hand)
-        console.log('cost_on_hand', cost_on_hand)
-      }
+      // if (line.line.ORDER_NUMBER === '368681') {
+      //   console.log('lbs_on_hand', lbs_on_hand)
+      //   console.log('cost_on_hand', cost_on_hand)
+      // }
 
       responses.push({
         ...line,
