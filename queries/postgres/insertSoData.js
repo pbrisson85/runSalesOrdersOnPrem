@@ -48,7 +48,7 @@ const insertSoData = async data => {
       const lotTracked = soLine.line.lotCosted
       const extRebate = typeof soLine.othp.rebate === 'undefined' ? 0 : soLine.othp.rebate
       const extDiscount = typeof soLine.othp.discount === 'undefined' ? 0 : soLine.othp.discount
-      const extFreightOut = typeof soLine.othp.freight === 'undefined' ? 0 : soLine.othp.freight
+      const extFreightOut = typeof soLine.othp.outbound === 'undefined' ? 0 : soLine.othp.outbound
       const extCommission = typeof soLine.othp.commission === 'undefined' ? 0 : soLine.othp.commission
       const extOthp = typeof soLine.othp.total === 'undefined' ? 0 : soLine.othp.total
       const aveCostPerLb = soLine.cost.weightedAveCost
