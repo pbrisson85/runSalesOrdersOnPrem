@@ -90,9 +90,9 @@ const getAverageCosts = async data => {
       responses.push({
         ...line,
         inventory: {
-          costOnHand: (cost_on_hand = 0 ? null : cost_on_hand),
-          lbsOnHand: (lbs_on_hand = 0 ? null : lbs_on_hand),
-          aveOnHandCostPerLb: (lbs_on_hand = 0 ? null : cost_on_hand / lbs_on_hand),
+          costOnHand: cost_on_hand,
+          lbsOnHand: lbs_on_hand,
+          aveOnHandCostPerLb: (lbs_on_hand = 0 ? 0 : cost_on_hand / lbs_on_hand),
         },
       })
     }
