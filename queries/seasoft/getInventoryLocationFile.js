@@ -88,6 +88,7 @@ const getAverageCosts = async data => {
       }
 
       if (lbs_on_hand === 0) {
+        // calcCost function needs the inventory key to be undefined if there is none to porperly calc extended inventory
         responses.push({
           ...line,
         })

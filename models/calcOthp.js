@@ -127,16 +127,6 @@ const calcOthp = (salesOrderLines, othpTable_unflat, othpDefinitions_unflat) => 
       return acc
     }, 0) // 1000
 
-    if (ORDER_NUMBER === '367854') {
-      console.log('othpCodes', othpCodes)
-      console.log('othpPrices', othpPrices)
-      console.log('multiplier', multiplier)
-      console.log('multiplier', multiplier)
-      console.log('othpCodesAndPrices', othpCodesAndPrices)
-      console.log('othpByDefinition', othpByDefinition)
-      console.log('totalOthp', totalOthp)
-    }
-
     return {
       ORDER_NUMBER,
       LINE_NUMBER,
