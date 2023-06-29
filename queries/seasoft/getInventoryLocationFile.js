@@ -86,6 +86,8 @@ const getAverageCosts = async data => {
         lbs_on_hand += item.ON_HAND_IN_UM * item.LOT_AVERAGE_WEIGHT
         cost_on_hand += item.ON_HAND_IN_UM * item.LOT_AVERAGE_WEIGHT * item.LAST_COST
 
+        console.log(item)
+
         if (item.ITEM_NUMBER === '9310025B') {
           console.log('item.ON_HAND_IN_UM', item.ON_HAND_IN_UM)
           console.log('item.LOT_AVERAGE_WEIGHT', item.LOT_AVERAGE_WEIGHT)
