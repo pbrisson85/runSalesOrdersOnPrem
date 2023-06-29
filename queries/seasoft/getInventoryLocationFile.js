@@ -101,14 +101,20 @@ const getAverageCosts = async data => {
       //   console.log('cost_on_hand', cost_on_hand)
       // }
 
-      responses.push({
-        ...line,
-        inventory: {
-          costOnHand: cost_on_hand,
-          lbsOnHand: lbs_on_hand,
-          aveOnHandCostPerLb: (lbs_on_hand = 0 ? 0 : cost_on_hand / lbs_on_hand),
-        },
-      })
+      if (lbs_on_hand === 0) {
+        responses.push({
+          ...line,
+        })
+      } else {
+        responses.push({
+          ...line,
+          inventory: {
+            costOnHand: cost_on_hand,
+            lbsOnHand: lbs_on_hand,
+            aveOnHandCostPerLb: cost_on_hand / lbs_on_hand,
+          },
+        })
+      }
     }
 
     await odbcConn.close()
