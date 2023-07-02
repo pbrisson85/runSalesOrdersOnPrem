@@ -65,7 +65,7 @@ const insertSoData = async data => {
       const week_serial = soLine.period.week_serial
       const aveTaggedCost = soLine.cost.aveTaggedCost
       const aveUntaggedCost = soLine.cost.aveUntaggedCost
-      const sales_net_ext = extSales - extendedCost
+      const sales_net_ext = extSales - extOthp
       const gross_margin_ext = extSales - extendedCost - extOthp
       const sales_net_lb = sales_net_ext / extWeight
       const gross_margin_lb = gross_margin_ext / extWeight
