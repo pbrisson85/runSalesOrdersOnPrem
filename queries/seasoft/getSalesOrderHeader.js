@@ -18,8 +18,6 @@ const getSalesOrderHeader = async () => {
 
     const response = await odbcConn.query(queryString)
 
-    console.log('response: ', response)
-
     await odbcConn.close()
 
     return response
