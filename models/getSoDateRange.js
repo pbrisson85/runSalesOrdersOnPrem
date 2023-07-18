@@ -1,4 +1,6 @@
 const getSoDateRange = soHeader => {
+  console.log('soHeader: ', soHeader)
+
   const sorted = soHeader.sort((a, b) => {
     const dateA = new Date(a.SCHEDULED_SHIP_DATE)
     const dateB = new Date(b.SCHEDULED_SHIP_DATE)
