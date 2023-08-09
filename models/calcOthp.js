@@ -88,13 +88,15 @@ const calcOthp = (salesOrderLines, othpTable_unflat, othpDefinitions_unflat) => 
       const price = othpPrices[index]
       const cost = price * multiplier
 
-      const contra = othpTable_unflat[code.trim()][0]?.CONTRA
+      const contra = othpTable_unflat[code.trim()][0]?.CONTRA ?? 'not found'
       // if contra not listed in contra_sales_gl_map table then ignore
       let ignore = false
       let definition = null
       if (typeof othpDefinitions_unflat[contra] === 'undefined') {
-        // send email notification
-        requestEmailNotification(`othp code: ${code} not found in othp table. Pertaining to sales order: ${ORDER_NUMBER}`)
+        if (contra === 'not found') {
+          // send email notification
+          requestEmailNotification(`othp code: ${code} not found in othp table. Pertaining to sales order: ${ORDER_NUMBER}`)
+        }
 
         ignore = true
       } else {
