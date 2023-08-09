@@ -85,6 +85,11 @@ const calcOthp = (salesOrderLines, othpTable_unflat, othpDefinitions_unflat) => 
     const othpCodesAndPrices = othpCodes.map((code, index) => {
       const price = othpPrices[index]
       const cost = price * multiplier
+
+      console.log('othpTable_unflat', othpTable_unflat)
+      console.log('code', code)
+      console.log('index', index)
+
       const contra = othpTable_unflat[code.trim()][0].CONTRA
       // if contra not listed in contra_sales_gl_map table then ignore
       let ignore = false
