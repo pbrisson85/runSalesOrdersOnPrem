@@ -1,4 +1,12 @@
-const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat, othpCalc_unflat, mappedPeriods) => {
+const joinData = (
+  salesOrderLines,
+  salesOrderHeader_unflat,
+  taggedInventory_unflat,
+  lastSalesCost_unflat,
+  othpCalc_unflat,
+  mappedPeriods,
+  salespersonMaster_unflat
+) => {
   // Map the item and cost into the
 
   const mappedData = salesOrderLines.map(line => {
@@ -13,6 +21,7 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
       timeZone: 'America/New_York',
     })
     const period = mappedPeriods[shipDate]
+    const salesPerson = salespersonMaster_unflat[header.OUTSIDE_SALESPERSON_CODE][0]
 
     return {
       header,
@@ -21,6 +30,7 @@ const joinData = (salesOrderLines, salesOrderHeader_unflat, taggedInventory_unfl
       lastSalesCost,
       othp,
       period,
+      salesPerson,
     }
   })
 

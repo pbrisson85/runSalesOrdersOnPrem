@@ -21,6 +21,7 @@ const insertSoData = async data => {
       const shipDate = soLine.header.SCHEDULED_SHIP_DATE
       const custPoNumber = soLine.header.CUSTOMER_ORDER_NUMBER
       const outsideSalesRep = soLine.header.OUTSIDE_SALESPERSON_CODE
+      const outsideSalesRepName = soLine.salesPerson.NAME
       const insideSalesRep = soLine.header.INSIDE_SALESPERSON_CODE
       const truckRoute = soLine.header.TRUCK_ROUTE
       const enteredBy = soLine.header.ENTERED_BY_CODE
@@ -85,7 +86,13 @@ const insertSoData = async data => {
 
       promises.push(
         pgClient.query(
-          'INSERT INTO "salesReporting".sales_orders (so_num, customer_code, customer_name, ship_date, cust_po_num, out_sales_rep, in_sales_rep, entered_by, truck_route, credit_status, ship_to_code, cust_terms_code, ship_method, fob, carrier, so_line, item_num, taxable, line_qty, unit_price, ext_sales, pricing_unit, location, lbs_per_um, ext_weight, tagged_weight, untagged_weight, remark_1, remark_2, remark_3, lot_tracked, ext_rebate, ext_discount, ext_freight, ext_othp, ave_cost_per_lb, ext_cost, used_last_cost, last_cost_date, last_cost_outdated_over_year, no_cost_found, ext_comm, version, timestamp, date_written, formatted_ship_date, fiscal_year, period, week, period_serial, week_serial, ave_tagged_cost, ave_untagged_cost, sales_net_ext, gross_margin_ext, sales_net_lb, gross_margin_lb, rebate_lb, discount_lb, freight_lb, commission_lb, othp_lb, gross_margin_tagged_lb, gross_margin_untagged_lb, gross_margin_tagged, gross_margin_untagged, cost_ext_tagged, cost_ext_untagged) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68) ON CONFLICT DO NOTHING',
+          `INSERT 
+            INTO "salesReporting".sales_orders 
+            (so_num, customer_code, customer_name, ship_date, cust_po_num, out_sales_rep, in_sales_rep, entered_by, truck_route, credit_status, ship_to_code, cust_terms_code, ship_method, fob, carrier, so_line, item_num, taxable, line_qty, unit_price, ext_sales, pricing_unit, location, lbs_per_um, ext_weight, tagged_weight, untagged_weight, remark_1, remark_2, remark_3, lot_tracked, ext_rebate, ext_discount, ext_freight, ext_othp, ave_cost_per_lb, ext_cost, used_last_cost, last_cost_date, last_cost_outdated_over_year, no_cost_found, ext_comm, version, timestamp, date_written, formatted_ship_date, fiscal_year, period, week, period_serial, week_serial, ave_tagged_cost, ave_untagged_cost, sales_net_ext, gross_margin_ext, sales_net_lb, gross_margin_lb, rebate_lb, discount_lb, freight_lb, commission_lb, othp_lb, gross_margin_tagged_lb, gross_margin_untagged_lb, gross_margin_tagged, gross_margin_untagged, cost_ext_tagged, cost_ext_untagged, out_sales_rep_name) 
+            
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69) 
+            
+            ON CONFLICT DO NOTHING`,
           [
             soNum,
             customerCode,
@@ -155,6 +162,7 @@ const insertSoData = async data => {
             gross_margin_untagged,
             cost_ext_tagged,
             cost_ext_untagged,
+            outsideSalesRepName,
           ]
         )
       )

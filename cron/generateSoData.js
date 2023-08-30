@@ -18,6 +18,7 @@ const getPeriodsByDay = require('../queries/postgres/getAccountingPeriodsByDay')
 const getSoDateRange = require('../models/getSoDateRange')
 const mapPeriodsPerDay = require('../models/mapPeriodsPerDay')
 const insertTaggedInventory = require('../queries/postgres/insertTaggedInvenData')
+const getSalespersonMaster = require('../queries/seasoft/getSalespersonMaster')
 
 const generateSoData = async source => {
   try {
@@ -33,6 +34,7 @@ const generateSoData = async source => {
     nonLotCostedItems = nonLotCostedItems.map(item => item.ITEM_NUMBER)
     let salesOrderLines = await getSalesOrderlines()
     const periodsByDay = await getPeriodsByDay(soDateRange)
+    const salespersonMaster = await getSalespersonMaster()
 
     salesOrderLines = assignCatchWeightLine(salesOrderLines, nonLotCostedItems) // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
     const catchWeightLines = await getCatchWeightLines(salesOrderLines) // adds sales order line number by using the tagged line number
@@ -69,8 +71,20 @@ const generateSoData = async source => {
       2: 'soLine',
     })
 
+    const salespersonMaster_unflat = unflattenByCompositKey(salespersonMaster, {
+      1: 'SALESPERSON_CODE',
+    })
+
     /* Map Data */
-    let data = joinData(salesOrderLines, salesOrderHeader_unflat, taggedInventory_unflat, lastSalesCost_unflat, othpCalc_unflat, mappedPeriods)
+    let data = joinData(
+      salesOrderLines,
+      salesOrderHeader_unflat,
+      taggedInventory_unflat,
+      lastSalesCost_unflat,
+      othpCalc_unflat,
+      mappedPeriods,
+      salespersonMaster_unflat
+    )
 
     // Add inventory average lot cost to each untagged line
     data = await getAverageCosts(data)
