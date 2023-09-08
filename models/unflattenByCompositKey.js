@@ -1,4 +1,4 @@
-const unflattenByCompositKey = (data, keys) => {
+const unflattenByCompositeKey = (data, keys) => {
   let unflat = {}
 
   const vals = Object.values(keys)
@@ -18,7 +18,7 @@ const unflattenByCompositKey = (data, keys) => {
     if (!unflat[key]) {
       unflat[key] = [{ ...row }]
     } else {
-      //console.log('hit duplicate key in unflattenByCompositKey: ', key)
+      //console.log('hit duplicate key in unflattenByCompositeKey: ', key)
       unflat[key].push(row)
     }
   })
@@ -26,4 +26,4 @@ const unflattenByCompositKey = (data, keys) => {
   return unflat
 }
 
-module.exports = unflattenByCompositKey
+module.exports = unflattenByCompositeKey

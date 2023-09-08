@@ -7,7 +7,7 @@ const { getLotCosts, getAverageCosts } = require('../queries/seasoft/getInventor
 const logEvent = require('../queries/postgres/logging')
 const getLastSalesCost = require('../queries/postgres/getLastSalesCost')
 const getOthpDefinitions = require('../queries/postgres/getOthpDefinitions')
-const unflattenByCompositKey = require('../models/unflattenByCompositKey')
+const unflattenByCompositeKey = require('../models/unflattenByCompositeKey')
 const modelCatchWeights = require('../models/modelCatchWeights')
 const joinData = require('../models/joinData')
 const assignCatchWeightLine = require('../models/assignCatchWeightLine')
@@ -51,24 +51,24 @@ const generateSoData = async source => {
     salesOrderHeader = cleanStates(states, salesOrderHeader) // NEW
 
     const mappedPeriods = mapPeriodsPerDay(periodsByDay)
-    const othpTable_unflat = unflattenByCompositKey(othpTable, {
+    const othpTable_unflat = unflattenByCompositeKey(othpTable, {
       1: 'OTHP_CODE',
     })
-    const othpDefinitions_unflat = unflattenByCompositKey(othpDefinitions, {
+    const othpDefinitions_unflat = unflattenByCompositeKey(othpDefinitions, {
       1: 'contra',
     })
-    const salesOrderHeader_unflat = unflattenByCompositKey(salesOrderHeader, {
+    const salesOrderHeader_unflat = unflattenByCompositeKey(salesOrderHeader, {
       1: 'DOCUMENT_NUMBER',
     })
-    const salesOrderLines_unflat = unflattenByCompositKey(salesOrderLines, {
+    const salesOrderLines_unflat = unflattenByCompositeKey(salesOrderLines, {
       1: 'ORDER_NUMBER',
       2: 'LINE_NUMBER',
     })
-    const lastSalesCost_unflat = unflattenByCompositKey(lastSalesCost, {
+    const lastSalesCost_unflat = unflattenByCompositeKey(lastSalesCost, {
       1: 'item_number',
     })
     const othpCalc = calcOthp(salesOrderLines, othpTable_unflat, othpDefinitions_unflat)
-    const othpCalc_unflat = unflattenByCompositKey(othpCalc, {
+    const othpCalc_unflat = unflattenByCompositeKey(othpCalc, {
       1: 'ORDER_NUMBER',
       2: 'LINE_NUMBER',
     })
@@ -76,12 +76,12 @@ const generateSoData = async source => {
     const catchWeightLinesModeled = modelCatchWeights(catchWeightLines) // flattens the catch weight lines and adds the sales order line number to the catch weight line key is soNum-LineNum-lotNum-Loc.
     // Use catch weight lines lot and location, along with sales order line itemNum to find The inventory cost:
     const taggedInventory = await getLotCosts(catchWeightLinesModeled, salesOrderLines_unflat)
-    const taggedInventory_unflat = unflattenByCompositKey(taggedInventory, {
+    const taggedInventory_unflat = unflattenByCompositeKey(taggedInventory, {
       1: 'so_num',
       2: 'soLine',
     })
 
-    const salespersonMaster_unflat = unflattenByCompositKey(salespersonMaster, {
+    const salespersonMaster_unflat = unflattenByCompositeKey(salespersonMaster, {
       1: 'SALESPERSON_CODE',
     })
 
