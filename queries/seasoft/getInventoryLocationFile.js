@@ -22,11 +22,11 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
 
       const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Inventory Location File\".LOCATION)} AS LOCATION, {fn RTRIM(\"Inventory Location File\".LOT_NUMBER_OR_SIZE)} AS LOT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".LOCATION = ? AND \"Inventory Location File\".LOT_NUMBER_OR_SIZE = ? AND \"Inventory Location File\".ITEM_NUMBER = ?" //prettier-ignore
 
-      const response = await odbcConn.query(queryString, [loc, lot, item])
+      let response = await odbcConn.query(queryString, [loc, lot, item])
 
       if (typeof response[0] === 'undefined') {
         await requestEmailNotification(
-          `In Function: getLotCosts, No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. This is likely an ODBC error. Try to manually run the query on Inventory Location File to test. Since this is a catch weight item table, it does not make sense that it is not in inventory.`
+          `In Function: getLotCosts, No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. This is likely an ODBC error. Try to manually run the query on Inventory Location File to test. Since this is a catch weight item table, it does not make sense that it is not in inventory. Going to try to run using wildcards...`
         )
 
         await logEvent({
@@ -36,7 +36,9 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
           note: `No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. This is likely an ODBC error. Try to manually run the query on Inventory Location File to test.`,
         })
 
-        continue
+        const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Inventory Location File\".LOCATION)} AS LOCATION, {fn RTRIM(\"Inventory Location File\".LOT_NUMBER_OR_SIZE)} AS LOT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".LOCATION LIKE ? AND \"Inventory Location File\".LOT_NUMBER_OR_SIZE LIKE ? AND \"Inventory Location File\".ITEM_NUMBER LIKE ?" //prettier-ignore
+
+        let response = await odbcConn.query(queryString, [`${loc}%`, `${lot}%`, `${item}%`])
       }
 
       // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
