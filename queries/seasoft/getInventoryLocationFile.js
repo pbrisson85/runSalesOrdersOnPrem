@@ -38,7 +38,20 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
 
         const queryString = "SELECT {fn RTRIM(\"Inventory Location File\".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM(\"Inventory Location File\".LOCATION)} AS LOCATION, {fn RTRIM(\"Inventory Location File\".LOT_NUMBER_OR_SIZE)} AS LOT, \"Inventory Location File\".LAST_COST FROM 'Inventory Location File' WHERE \"Inventory Location File\".ON_HAND_IN_UM <> 0 AND \"Inventory Location File\".LOCATION LIKE ? AND \"Inventory Location File\".LOT_NUMBER_OR_SIZE LIKE ? AND \"Inventory Location File\".ITEM_NUMBER LIKE ?" //prettier-ignore
 
-        let response = await odbcConn.query(queryString, [`${loc}%`, `${lot}%`, `${item}%`])
+        response = await odbcConn.query(queryString, [`${loc}%`, `${lot}%`, `${item}%`])
+
+        if (typeof response[0] === 'undefined') {
+          await requestEmailNotification(`In Function: getLotCosts, Using wildcards did not work. Tagged inventory Lots is not being updated`)
+
+          await logEvent({
+            event_type: 'error',
+            funct: 'getLotCosts',
+            reason: 'No inventory found',
+            note: `Tried alternative query with LIKE % but still no inventory found`,
+          })
+        } else {
+          console.log(`No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. tried an alternative query with wildcards which worked`)
+        }
       }
 
       // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
