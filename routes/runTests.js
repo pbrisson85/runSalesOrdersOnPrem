@@ -11,9 +11,9 @@ router.get('/', async (req, res) => {
     console.log('\nmanually run tests route hit.')
 
     const result = await runShipToTests()
-    res.send(result)
 
     console.log('manually run tests route comlete. \n')
+    res.send(result)
   } catch (error) {
     await logEvent({
       event_type: 'error',
