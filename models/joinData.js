@@ -5,12 +5,17 @@ const joinData = (
   lastSalesCost_unflat,
   othpCalc_unflat,
   mappedPeriods,
-  salespersonMaster_unflat
+  salespersonMaster_unflat,
+  shipToFile_unflat,
+  customerMaster_unflat
 ) => {
   // Map the item and cost into the
 
   const mappedData = salesOrderLines.map(line => {
     const { LINE_NUMBER, ORDER_NUMBER, ITEM_NUMBER } = line
+
+    const cust_code = salesOrderHeader_unflat[ORDER_NUMBER][0].CUSTOMER_CODE
+    const shipto_code = salesOrderHeader_unflat[ORDER_NUMBER][0].SHIPTO_CODE
 
     const header = salesOrderHeader_unflat[ORDER_NUMBER][0]
     const taggedLots = taggedInventory_unflat[`${ORDER_NUMBER}-${LINE_NUMBER}`]
@@ -22,6 +27,9 @@ const joinData = (
     })
     const period = mappedPeriods[shipDate]
     const salesPerson = salespersonMaster_unflat[header.OUTSIDE_SALESPERSON_CODE][0]
+    const shipToFile =
+      typeof shipToFile_unflat[`${cust_code}-${shipto_code}`] === 'undefined' ? null : shipToFile_unflat[`${cust_code}-${shipto_code}`][0]
+    const customerMaster = customerMaster_unflat[cust_code][0]
 
     return {
       header,
@@ -31,6 +39,8 @@ const joinData = (
       othp,
       period,
       salesPerson,
+      shipToFile,
+      customerMaster,
     }
   })
 

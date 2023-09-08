@@ -19,6 +19,10 @@ const getSoDateRange = require('../models/getSoDateRange')
 const mapPeriodsPerDay = require('../models/mapPeriodsPerDay')
 const insertTaggedInventory = require('../queries/postgres/insertTaggedInvenData')
 const getSalespersonMaster = require('../queries/seasoft/getSalespersonMaster')
+const cleanStates = require('../models/cleanStates') // NEW
+const getShipToFile = require('../queries/seasoft/getShipToFile') // NEW
+const getCustomerMaster = require('../queries/seasoft/getCustomerMaster') // NEW
+const getStates = require('../queries/postgres/getStates') // NEW
 
 const generateSoData = async source => {
   try {
@@ -28,7 +32,7 @@ const generateSoData = async source => {
     const othpDefinitions = await getOthpDefinitions()
     const othpTable = await getOthpTable()
     const lastSalesCost = await getLastSalesCost()
-    const salesOrderHeader = await getSalesOrderHeader()
+    let salesOrderHeader = await getSalesOrderHeader()
     const soDateRange = getSoDateRange(salesOrderHeader) // get date range from sales order header
     let nonLotCostedItems = await getNonLotCostedItems() // if item is not lot costed then weight will be in the billed weight (tagged weight) col.
     nonLotCostedItems = nonLotCostedItems.map(item => item.ITEM_NUMBER)
@@ -39,7 +43,13 @@ const generateSoData = async source => {
     salesOrderLines = assignCatchWeightLine(salesOrderLines, nonLotCostedItems) // assign a "tagged line number" to each line. This will be used to match up to the catch weight lines.
     const catchWeightLines = await getCatchWeightLines(salesOrderLines) // adds sales order line number by using the tagged line number
 
+    const shipToFile = await getShipToFile() // NEW
+    const customerMaster = await getCustomerMaster() // NEW
+    const states = await getStates() // NEW
+
     /* Model Data */
+    salesOrderHeader = cleanStates(states, salesOrderHeader) // NEW
+
     const mappedPeriods = mapPeriodsPerDay(periodsByDay)
     const othpTable_unflat = unflattenByCompositKey(othpTable, {
       1: 'OTHP_CODE',
@@ -75,6 +85,14 @@ const generateSoData = async source => {
       1: 'SALESPERSON_CODE',
     })
 
+    const shipToFile_unflat = unflattenByCompositeKey(shipToFile, {
+      1: 'CUSTOMER_CODE',
+      2: 'SHIPTO_CODE',
+    }) // NEW
+    const customerMaster_unflat = unflattenByCompositeKey(customerMaster, {
+      1: 'CUSTOMER_CODE',
+    }) // NEW
+
     /* Map Data */
     let data = joinData(
       salesOrderLines,
@@ -83,7 +101,9 @@ const generateSoData = async source => {
       lastSalesCost_unflat,
       othpCalc_unflat,
       mappedPeriods,
-      salespersonMaster_unflat
+      salespersonMaster_unflat,
+      shipToFile_unflat, // NEW
+      customerMaster_unflat // NEW
     )
 
     // Add inventory average lot cost to each untagged line

@@ -15,6 +15,34 @@ const insertSoData = async data => {
 
     let promises = []
     for (soLine of data) {
+      let state = null
+      let country = null
+      let address_source = null
+      if (soLine.shipToFile !== null) {
+        // Use ship to file
+        address_source = 'ship_to_file'
+        country = soLine.shipToFile.COUNTRY_CODE
+        if (country === 'USA') {
+          state = soLine.shipToFile.STATE
+        } else {
+          state = 'OUTSIDE USA'
+        }
+      } else if (soLine.header.SHIPTO_STATE !== null) {
+        // Use order info
+        address_source = 'order_info'
+        country = 'USA' // orderInfo has been filtered to only include valid US states
+        state = soLine.header.SHIPTO_STATE
+      } else {
+        // Use customer master file
+        address_source = 'customer_master'
+        country = soLine.customerMaster.COUNTRY_CODE
+        if (country === 'USA') {
+          state = soLine.customerMaster.STATE
+        } else {
+          state = 'OUTSIDE USA'
+        }
+      }
+
       const soNum = soLine.header.DOCUMENT_NUMBER
       const customerCode = soLine.header.CUSTOMER_CODE
       const customerName = soLine.header.CUSTOMER_NAME
@@ -88,9 +116,9 @@ const insertSoData = async data => {
         pgClient.query(
           `INSERT 
             INTO "salesReporting".sales_orders 
-            (so_num, customer_code, customer_name, ship_date, cust_po_num, out_sales_rep, in_sales_rep, entered_by, truck_route, credit_status, ship_to_code, cust_terms_code, ship_method, fob, carrier, so_line, item_num, taxable, line_qty, unit_price, ext_sales, pricing_unit, location, lbs_per_um, ext_weight, tagged_weight, untagged_weight, remark_1, remark_2, remark_3, lot_tracked, ext_rebate, ext_discount, ext_freight, ext_othp, ave_cost_per_lb, ext_cost, used_last_cost, last_cost_date, last_cost_outdated_over_year, no_cost_found, ext_comm, version, timestamp, date_written, formatted_ship_date, fiscal_year, period, week, period_serial, week_serial, ave_tagged_cost, ave_untagged_cost, sales_net_ext, gross_margin_ext, sales_net_lb, gross_margin_lb, rebate_lb, discount_lb, freight_lb, commission_lb, othp_lb, gross_margin_tagged_lb, gross_margin_untagged_lb, gross_margin_tagged, gross_margin_untagged, cost_ext_tagged, cost_ext_untagged, out_sales_rep_name) 
+            (so_num, customer_code, customer_name, ship_date, cust_po_num, out_sales_rep, in_sales_rep, entered_by, truck_route, credit_status, ship_to_code, cust_terms_code, ship_method, fob, carrier, so_line, item_num, taxable, line_qty, unit_price, ext_sales, pricing_unit, location, lbs_per_um, ext_weight, tagged_weight, untagged_weight, remark_1, remark_2, remark_3, lot_tracked, ext_rebate, ext_discount, ext_freight, ext_othp, ave_cost_per_lb, ext_cost, used_last_cost, last_cost_date, last_cost_outdated_over_year, no_cost_found, ext_comm, version, timestamp, date_written, formatted_ship_date, fiscal_year, period, week, period_serial, week_serial, ave_tagged_cost, ave_untagged_cost, sales_net_ext, gross_margin_ext, sales_net_lb, gross_margin_lb, rebate_lb, discount_lb, freight_lb, commission_lb, othp_lb, gross_margin_tagged_lb, gross_margin_untagged_lb, gross_margin_tagged, gross_margin_untagged, cost_ext_tagged, cost_ext_untagged, out_sales_rep_name, state, country, address_source) 
             
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69) 
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37, $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, $50, $51, $52, $53, $54, $55, $56, $57, $58, $59, $60, $61, $62, $63, $64, $65, $66, $67, $68, $69, $70, $71, $72) 
             
             ON CONFLICT DO NOTHING`,
           [
@@ -163,6 +191,9 @@ const insertSoData = async data => {
             cost_ext_tagged,
             cost_ext_untagged,
             outsideSalesRepName,
+            state,
+            country,
+            address_source,
           ]
         )
       )
