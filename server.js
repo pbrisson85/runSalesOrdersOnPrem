@@ -8,10 +8,16 @@ const helmet = require('helmet')
 
 // initialize routes
 const generateSalesOrders = require('./routes/generateSalesOrders')
+const runTests = require('./routes/runTests')
 
 // initialize startup procedures
 const { runCronOnStartup } = require('./startup/cron')
 const startPgListen = require('./startup/pgNotifications')
+
+// initialize postgres js
+const postgres = require('postgres')
+const sql = postgres()
+module.exports = sql
 
 // error handling
 process.on('uncaughtException', async ex => {
@@ -49,6 +55,7 @@ process.on('unhandledRejection', async ex => {
 app.use(helmet())
 app.use(express.json())
 app.use('/api/salesOrders/generate', generateSalesOrders)
+app.use('/api/salesOrders/tests', runTests)
 
 // startup
 runCronOnStartup()
