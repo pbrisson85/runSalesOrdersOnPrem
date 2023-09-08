@@ -25,9 +25,9 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
       let response = await odbcConn.query(queryString, [loc, lot, item])
 
       if (typeof response[0] === 'undefined') {
-        await requestEmailNotification(
-          `In Function: getLotCosts, No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. This is likely an ODBC error. Try to manually run the query on Inventory Location File to test. Since this is a catch weight item table, it does not make sense that it is not in inventory. Going to try to run using wildcards...`
-        )
+        // await requestEmailNotification(
+        //   `In Function: getLotCosts, No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. This is likely an ODBC error. Try to manually run the query on Inventory Location File to test. Since this is a catch weight item table, it does not make sense that it is not in inventory. Going to try to run using wildcards...`
+        // )
 
         await logEvent({
           event_type: 'error',
@@ -41,7 +41,9 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
         response = await odbcConn.query(queryString, [`${loc}%`, `${lot}%`, `${item}%`])
 
         if (typeof response[0] === 'undefined') {
-          await requestEmailNotification(`In Function: getLotCosts, Using wildcards did not work. Tagged inventory Lots is not being updated`)
+          await requestEmailNotification(
+            `In Function: getLotCosts, No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. This is likely an ODBC error. Try to manually run the query on Inventory Location File to test. Since this is a catch weight item table, it does not make sense that it is not in inventory. Alternatively already tried running the query using wildcards in the variables which also failed.`
+          )
 
           await logEvent({
             event_type: 'error',
@@ -50,7 +52,15 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
             note: `Tried alternative query with LIKE % but still no inventory found`,
           })
         } else {
-          console.log(`No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. tried an alternative query with wildcards which worked`)
+          // await requestEmailNotification(
+          //   `wildcards worked`
+          // )
+          await logEvent({
+            event_type: 'error',
+            funct: 'getLotCosts',
+            reason: 'No inventory found - Alternative worked',
+            note: `No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. Tried alternative query with LIKE % and this worked`,
+          })
         }
       }
 
