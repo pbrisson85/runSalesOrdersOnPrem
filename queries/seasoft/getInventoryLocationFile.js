@@ -1,6 +1,7 @@
 const { createConnection } = require('../../database/seasoftODBC')
 const { setFlag, getFlag } = require('../../queries/postgres/flags')
 const logEvent = require('../../queries/postgres/logging')
+const requestEmailNotification = require('../../requests/requestEmail')
 
 const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
   try {
@@ -23,7 +24,20 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
 
       const response = await odbcConn.query(queryString, [loc, lot, item])
 
-      if (typeof response[0] === 'undefined') console.log('response: ', response, 'NO INVENTORY FOUND: ', catchWeightLines[key], item) // DEBUG ************************
+      if (typeof response[0] === 'undefined') {
+        await requestEmailNotification(
+          `In Function: getLotCosts, No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. This is likely an ODBC error. Try to manually run the query on Inventory Location File to test. Since this is a catch weight item table, it does not make sense that it is not in inventory.`
+        )
+
+        await logEvent({
+          event_type: 'error',
+          funct: 'getLotCosts',
+          reason: 'No inventory found',
+          note: `No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. This is likely an ODBC error. Try to manually run the query on Inventory Location File to test.`,
+        })
+
+        continue
+      }
 
       // Note that multiple items can be tagged to the same lot and location. They appear to be in the same order as the sales order lines
 
