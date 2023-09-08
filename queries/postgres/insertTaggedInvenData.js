@@ -15,6 +15,8 @@ const insertTaggedInventory = async data => {
 
     let promises = []
     for (soLine of data) {
+      if (!soLine.ITEM_NUMBER) console.log(' no item number?...: ', soLine)
+
       const itemNum = soLine.ITEM_NUMBER
       const location = soLine.LOCATION
       const lot = soLine.LOT
