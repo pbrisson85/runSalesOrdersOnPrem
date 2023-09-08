@@ -1,4 +1,4 @@
-const { createConnection } = require('../../../database/seasoftODBC')
+const { createConnection } = require('../../database/seasoftODBC')
 
 const getShipToFile = async () => {
   try {
