@@ -17,6 +17,8 @@ const runShipToTests = async () => {
     GROUP BY so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     `
 
+  console.log('blankState', blankState)
+
   if (blankState.length) {
     let err = `Data testing exception: BLANK STATE found in salesReporting.sales_line_items: ${JSON.stringify(blankState)}`
     errors.push(err)
