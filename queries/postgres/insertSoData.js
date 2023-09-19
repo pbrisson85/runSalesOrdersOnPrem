@@ -1,6 +1,7 @@
 const logEvent = require('./logging')
 const { pool } = require('../../server')
 const addHours = require('date-fns/addHours')
+const addMinutes = require('date-fns/addMinutes')
 
 const insertSoData = async data => {
   try {
@@ -112,7 +113,10 @@ const insertSoData = async data => {
       const logisticsStatus = soLine.header.SHIP_METHOD // Need a definition?
       const soEnteredDate = new Date(soLine.header.DOCUMENT_DATE)
       const soEnteredTime = soLine.header.TIME_CREATED
-      const soEnteredTimeStamp = addHours(soEnteredDate, soEnteredTime)
+      const hours = soEnteredTime.split('.')[0]
+      const minutes = soEnteredTime.split('.')[1]
+      let soEnteredTimeStamp = addHours(soEnteredDate, hours)
+      soEnteredTimeStamp = addMinutes(soEnteredTimeStamp, minutes)
 
       console.log('soEnteredDate', soEnteredDate)
       console.log('soEnteredTime', soEnteredTime)
