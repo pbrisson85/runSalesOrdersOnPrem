@@ -7,7 +7,8 @@ const joinData = (
   mappedPeriods,
   salespersonMaster_unflat,
   shipToFile_unflat,
-  customerMaster_unflat
+  customerMaster_unflat,
+  genTblCreditStatus_unflat
 ) => {
   // Map the item and cost into the
 
@@ -30,6 +31,7 @@ const joinData = (
     const shipToFile =
       typeof shipToFile_unflat[`${cust_code}-${shipto_code}`] === 'undefined' ? null : shipToFile_unflat[`${cust_code}-${shipto_code}`][0]
     const customerMaster = customerMaster_unflat[cust_code][0]
+    const creditStatus = genTblCreditStatus_unflat[header.CREDIT_STATUS_FLAG][0]
 
     return {
       header,
@@ -41,6 +43,7 @@ const joinData = (
       salesPerson,
       shipToFile,
       customerMaster,
+      creditStatus,
     }
   })
 
