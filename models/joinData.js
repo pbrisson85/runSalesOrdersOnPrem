@@ -8,7 +8,8 @@ const joinData = (
   salespersonMaster_unflat,
   shipToFile_unflat,
   customerMaster_unflat,
-  genTblCreditStatus_unflat
+  genTblCreditStatus_unflat,
+  genTblShipMethod_unflat
 ) => {
   // Map the item and cost into the
 
@@ -33,6 +34,10 @@ const joinData = (
     const customerMaster = customerMaster_unflat[cust_code][0]
     const creditStatus = genTblCreditStatus_unflat[header.CREDIT_STATUS_FLAG][0]
 
+    console.log('ship method: ', header.SHIP_METHOD)
+
+    const shipMethod = genTblShipMethod_unflat[header.SHIP_METHOD][0]
+
     return {
       header,
       line,
@@ -44,6 +49,7 @@ const joinData = (
       shipToFile,
       customerMaster,
       creditStatus,
+      shipMethod,
     }
   })
 

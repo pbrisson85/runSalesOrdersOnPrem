@@ -24,6 +24,7 @@ const getShipToFile = require('../queries/seasoft/getShipToFile')
 const getCustomerMaster = require('../queries/seasoft/getCustomerMaster')
 const getStates = require('../queries/postgres/getStates')
 const getGenTblCreditStatus = require('../queries/seasoft/getGenTblCreditStatus')
+const getGenTblShipMethod = require('../queries/seasoft/getGenTblShipMethod')
 
 const generateSoData = async source => {
   try {
@@ -48,6 +49,7 @@ const generateSoData = async source => {
     const customerMaster = await getCustomerMaster()
     const states = await getStates()
     const genTblCreditStatus = await getGenTblCreditStatus()
+    const genTblShipMethod = await getGenTblShipMethod()
 
     /* Model Data */
     salesOrderHeader = cleanStates(states, salesOrderHeader)
@@ -97,6 +99,9 @@ const generateSoData = async source => {
     const genTblCreditStatus_unflat = unflattenByCompositeKey(genTblCreditStatus, {
       1: 'TABLE_CODE',
     })
+    const genTblShipMethod_unflat = unflattenByCompositeKey(genTblShipMethod, {
+      1: 'TABLE_CODE',
+    })
 
     /* Map Data */
     let data = joinData(
@@ -109,7 +114,8 @@ const generateSoData = async source => {
       salespersonMaster_unflat,
       shipToFile_unflat,
       customerMaster_unflat,
-      genTblCreditStatus_unflat
+      genTblCreditStatus_unflat,
+      genTblShipMethod_unflat
     )
 
     // Add inventory average lot cost to each untagged line
