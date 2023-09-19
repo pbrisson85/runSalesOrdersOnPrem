@@ -1,14 +1,13 @@
 const listenForPgNotification = async () => {
-  const { Client } = require('pg')
-  const pgClient = new Client() // config from ENV
-  await pgClient.connect()
+  const { pool } = require('../server')
+
   const pauseOnOdbcError = require('../error/pauseOnOdbcError')
 
-  pgClient.query('LISTEN new_eod_start')
-  pgClient.query('LISTEN send_sales_order_reporting_flag')
+  pool.query('LISTEN new_eod_start')
+  pool.query('LISTEN send_sales_order_reporting_flag')
 
   // notify listener
-  pgClient.on('notification', async msg => {
+  pool.on('notification', async msg => {
     // event handler 1
     if (msg.channel === 'new_eod_start') {
       const payload = JSON.parse(msg.payload)

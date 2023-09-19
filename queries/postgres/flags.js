@@ -1,16 +1,11 @@
 const logEvent = require('./logging')
+const { pool } = require('../../server')
 
 const getFlag = async flag_id => {
   try {
-    const { Client } = require('pg')
-    const pgClient = new Client() // config from ENV
-    await pgClient.connect()
-
     // console.log(`query postgres to GET ${flag_id} busy flag ...`)
 
-    const response = await pgClient.query('SELECT value FROM "salesReporting".flags WHERE id = $1', [flag_id])
-
-    await pgClient.end()
+    const response = await pool.query('SELECT value FROM "salesReporting".flags WHERE id = $1', [flag_id])
 
     return response.rows[0].value
   } catch (error) {
@@ -28,15 +23,9 @@ const getFlag = async flag_id => {
 
 const setFlag = async (flag_id, bool) => {
   try {
-    const { Client } = require('pg')
-    const pgClient = new Client() // config from ENV
-    await pgClient.connect()
-
     // console.log(`query postgres to SET ${flag_id} busy flag to ${bool} ...`)
 
-    await pgClient.query('UPDATE "salesReporting".flags SET value = $2 WHERE id = $1', [flag_id, bool])
-
-    await pgClient.end()
+    await pool.query('UPDATE "salesReporting".flags SET value = $2 WHERE id = $1', [flag_id, bool])
 
     return
   } catch (error) {
@@ -51,16 +40,12 @@ const setFlag = async (flag_id, bool) => {
 
 const setAllFlagsFalse = async () => {
   try {
-    const { Client } = require('pg')
-    const pgClient = new Client() // config from ENV
-    await pgClient.connect()
-
-    const response = await pgClient.query('SELECT id FROM "salesReporting".flags')
+    const response = await pool.query('SELECT id FROM "salesReporting".flags')
 
     let promises = []
     for (flag of response.rows) {
       console.log(`query postgres to SET ${flag.id} to false ...`)
-      promises.push(pgClient.query('UPDATE "salesReporting".flags SET value = false WHERE id = $1', [flag.id]))
+      promises.push(pool.query('UPDATE "salesReporting".flags SET value = false WHERE id = $1', [flag.id]))
     }
     const pgResponse = await Promise.all(promises)
     let rowsUpdatedCount = 0
@@ -70,8 +55,6 @@ const setAllFlagsFalse = async () => {
     })
 
     console.log(`inserted ${rowsUpdatedCount} rows`)
-
-    await pgClient.end()
 
     return
   } catch (error) {

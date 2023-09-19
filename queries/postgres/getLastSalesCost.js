@@ -1,14 +1,11 @@
 const logEvent = require('./logging')
+const { pool } = require('../../server')
 
 const getLastSalesCost = async () => {
   try {
-    const { Client } = require('pg')
-    const pgClient = new Client() // config from ENV
-    await pgClient.connect()
-
     console.log(`query postgres to get last sales cost for all items ...`)
 
-    const response = await pgClient.query(
+    const response = await pool.query(
       `SELECT 
         t.item_number, 
         t.formatted_invoice_date, 
@@ -26,8 +23,6 @@ const getLastSalesCost = async () => {
           AS t 
       WHERE seqnum = 1`
     )
-
-    await pgClient.end()
 
     return response.rows
   } catch (error) {

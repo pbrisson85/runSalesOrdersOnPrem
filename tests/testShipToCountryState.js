@@ -1,20 +1,16 @@
 // NET while other places using NLD)
 
-const sql = require('../server')
 const requestEmailNotification = require('../requests/requestEmail')
+const { pool } = require('../server')
 
 const runShipToTests = async () => {
-  const { Client } = require('pg')
-  const pgClient = new Client() // config from ENV
-  await pgClient.connect()
-
   console.log('running ship to country state tests...')
 
   let errors = []
 
   // state should never be blank wih a USA ship to
   console.log('query for blank state')
-  const blankState = await pgClient.query(`
+  const blankState = await pool.query(`
     SELECT so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     FROM "salesReporting".sales_orders AS so
     WHERE (so.state = '' OR so.state IS NULL) AND so.country = 'USA'
@@ -29,7 +25,7 @@ const runShipToTests = async () => {
 
   // country should never be blank
   console.log('query for blank country')
-  const blankCountry = await pgClient.query(`
+  const blankCountry = await pool.query(`
     SELECT so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     FROM "salesReporting".sales_orders AS so
     WHERE so.country = '' OR so.country IS NULL
@@ -44,7 +40,7 @@ const runShipToTests = async () => {
 
   // state should always read 'OUTSIDE USA' with a non USA ship to
   console.log('query for outside usa state')
-  const outSideUsaState = await pgClient.query(`
+  const outSideUsaState = await pool.query(`
     SELECT so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     FROM "salesReporting".sales_orders AS so
     WHERE so.state <> 'OUTSIDE USA' AND so.country <> 'USA'
@@ -61,7 +57,7 @@ const runShipToTests = async () => {
 
   // state should never say 'OUTSIDE USA' with a USA ship to
   console.log('query for outside usa country')
-  const outSideUsaCountry = await pgClient.query(`
+  const outSideUsaCountry = await pool.query(`
     SELECT so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     FROM "salesReporting".sales_orders AS so
     WHERE so.state = 'OUTSIDE USA' AND so.country = 'USA'

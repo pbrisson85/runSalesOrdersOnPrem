@@ -1,13 +1,10 @@
 const logEvent = require('./logging')
+const { pool } = require('../../server')
 
 const insertSoData = async data => {
   try {
-    const { Client } = require('pg')
-    const pgClient = new Client() // config from ENV
-    await pgClient.connect()
-
     // get versions
-    const maxVersion = await pgClient.query('SELECT MAX(version) FROM "salesReporting".sales_orders')
+    const maxVersion = await pool.query('SELECT MAX(version) FROM "salesReporting".sales_orders')
     let maxVersionNumber = maxVersion.rows[0].max
 
     if (maxVersionNumber === null) maxVersionNumber = 0
@@ -113,7 +110,7 @@ const insertSoData = async data => {
       // NEED TO CALC THE COST
 
       promises.push(
-        pgClient.query(
+        pool.query(
           `INSERT 
             INTO "salesReporting".sales_orders 
             (so_num, customer_code, customer_name, ship_date, cust_po_num, out_sales_rep, in_sales_rep, entered_by, truck_route, credit_status, ship_to_code, cust_terms_code, ship_method, fob, carrier, so_line, item_num, taxable, line_qty, unit_price, ext_sales, pricing_unit, location, lbs_per_um, ext_weight, tagged_weight, untagged_weight, remark_1, remark_2, remark_3, lot_tracked, ext_rebate, ext_discount, ext_freight, ext_othp, ave_cost_per_lb, ext_cost, used_last_cost, last_cost_date, last_cost_outdated_over_year, no_cost_found, ext_comm, version, timestamp, date_written, formatted_ship_date, fiscal_year, period, week, period_serial, week_serial, ave_tagged_cost, ave_untagged_cost, sales_net_ext, gross_margin_ext, sales_net_lb, gross_margin_lb, rebate_lb, discount_lb, freight_lb, commission_lb, othp_lb, gross_margin_tagged_lb, gross_margin_untagged_lb, gross_margin_tagged, gross_margin_untagged, cost_ext_tagged, cost_ext_untagged, out_sales_rep_name, state, country, address_source, domestic, north_america) 
@@ -213,19 +210,17 @@ const insertSoData = async data => {
     // delete the oldest version if more than three versions exist
     console.log(`query postgres to delete the sales orders ...`)
 
-    const numVersions = await pgClient.query('SELECT DISTINCT(version) AS version FROM "salesReporting".sales_orders ORDER BY version ASC')
+    const numVersions = await pool.query('SELECT DISTINCT(version) AS version FROM "salesReporting".sales_orders ORDER BY version ASC')
 
     const lowestVersion = numVersions.rows[0].version
 
     if (numVersions.rows.length > 3) {
-      const deleteResponse = await pgClient.query(
+      const deleteResponse = await pool.query(
         'DELETE FROM "salesReporting".sales_orders WHERE version = (SELECT MIN(version) FROM "salesReporting".sales_orders)'
       )
 
       console.log(`deleted ${deleteResponse.rowCount} rows of version: ${lowestVersion}`)
     }
-
-    await pgClient.end()
 
     return rowsUpdatedCount
   } catch (error) {

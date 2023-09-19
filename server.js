@@ -17,7 +17,12 @@ const startPgListen = require('./startup/pgNotifications')
 // initialize postgres js
 const postgres = require('postgres')
 const sql = postgres()
-module.exports = sql
+module.exports.sql = sql
+
+// initialize pg
+const { Pool } = require('pg')
+const pool = new Pool()
+module.exports.pool = pool
 
 // error handling
 process.on('uncaughtException', async ex => {

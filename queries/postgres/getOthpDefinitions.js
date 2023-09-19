@@ -1,16 +1,11 @@
 const logEvent = require('./logging')
+const { pool } = require('../../server')
 
 const getOthpDefinitions = async () => {
   try {
-    const { Client } = require('pg')
-    const pgClient = new Client() // config from ENV
-    await pgClient.connect()
-
     console.log(`query postgres to GET othp definitions ...`)
 
-    const response = await pgClient.query('SELECT t.contra, t.category FROM "salesReporting".contra_sales_gl_map AS t')
-
-    await pgClient.end()
+    const response = await pool.query('SELECT t.contra, t.category FROM "salesReporting".contra_sales_gl_map AS t')
 
     return response.rows
   } catch (error) {
