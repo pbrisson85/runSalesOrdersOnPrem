@@ -6,14 +6,6 @@ const express = require('express')
 const app = express()
 const helmet = require('helmet')
 
-// initialize routes
-const generateSalesOrders = require('./routes/generateSalesOrders')
-const runTests = require('./routes/runTests')
-
-// initialize startup procedures
-const { runCronOnStartup } = require('./startup/cron')
-const startPgListen = require('./startup/pgNotifications')
-
 // initialize postgres js
 const postgres = require('postgres')
 const sql = postgres()
@@ -23,6 +15,14 @@ module.exports.sql = sql
 const { Pool } = require('pg')
 const pool = new Pool()
 module.exports.pool = pool
+
+// initialize routes
+const generateSalesOrders = require('./routes/generateSalesOrders')
+const runTests = require('./routes/runTests')
+
+// initialize startup procedures
+const { runCronOnStartup } = require('./startup/cron')
+const startPgListen = require('./startup/pgNotifications')
 
 // error handling
 process.on('uncaughtException', async ex => {
