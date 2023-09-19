@@ -114,7 +114,7 @@ const insertSoData = async data => {
       //const soEnteredDate = new Date(soLine.header.DOCUMENT_DATE)
 
       let soEnteredDate = soLine.header.DOCUMENT_DATE.split('-') // result: [yyyy,m,d]
-      soEnteredDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2], 0, 0, 0, 0)
+      soEnteredDate = new Date(soEnteredDate[0], soEnteredDate[1] - 1, soEnteredDate[2], 0, 0, 0, 0)
 
       console.log('header entered date', soLine.header.DOCUMENT_DATE)
       console.log('soEnteredDate', soEnteredDate)
