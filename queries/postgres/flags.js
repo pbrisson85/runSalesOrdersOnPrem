@@ -1,8 +1,8 @@
 const logEvent = require('./logging')
+const { pool } = require('../../server')
 
 const getFlag = async flag_id => {
   try {
-    const { pool } = require('../../server')
     // console.log(`query postgres to GET ${flag_id} busy flag ...`)
 
     const response = await pool.query('SELECT value FROM "salesReporting".flags WHERE id = $1', [flag_id])
@@ -23,7 +23,6 @@ const getFlag = async flag_id => {
 
 const setFlag = async (flag_id, bool) => {
   try {
-    const { pool } = require('../../server')
     // console.log(`query postgres to SET ${flag_id} busy flag to ${bool} ...`)
 
     await pool.query('UPDATE "salesReporting".flags SET value = $2 WHERE id = $1', [flag_id, bool])
@@ -41,7 +40,6 @@ const setFlag = async (flag_id, bool) => {
 
 const setAllFlagsFalse = async () => {
   try {
-    const { pool } = require('../../server')
     const response = await pool.query('SELECT id FROM "salesReporting".flags')
 
     let promises = []
