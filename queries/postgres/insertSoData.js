@@ -113,6 +113,9 @@ const insertSoData = async data => {
       const logisticsStatus = soLine.header.SHIP_METHOD
       const soEnteredDate = new Date(soLine.header.DOCUMENT_DATE)
 
+      console.log('header entered date', soLine.header.DOCUMENT_DATE)
+      console.log('soEnteredDate', soEnteredDate)
+
       // NEED TO CALC THE COST
 
       promises.push(
