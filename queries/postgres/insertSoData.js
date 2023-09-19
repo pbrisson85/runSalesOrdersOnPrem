@@ -111,7 +111,10 @@ const insertSoData = async data => {
 
       const creditStatusDesc = soLine.creditStatus.TABLE_DESC
       const logisticsStatus = soLine.header.SHIP_METHOD
-      const soEnteredDate = new Date(soLine.header.DOCUMENT_DATE)
+      //const soEnteredDate = new Date(soLine.header.DOCUMENT_DATE)
+
+      let soEnteredDate = header.soEnteredDate.split('-') // result: [yyyy,m,d]
+      soEnteredDate = new Date(dateArr[0], dateArr[1] - 1, dateArr[2], 0, 0, 0, 0)
 
       console.log('header entered date', soLine.header.DOCUMENT_DATE)
       console.log('soEnteredDate', soEnteredDate)
