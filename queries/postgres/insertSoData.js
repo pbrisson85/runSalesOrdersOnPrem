@@ -118,7 +118,7 @@ const insertSoData = async data => {
       let soEnteredTimeStamp = addHours(soEnteredDate, hours)
       soEnteredTimeStamp = addMinutes(soEnteredTimeStamp, minutes)
 
-      if (!soEnteredTimeStamp) console.log('soLine doesnt have entered timestamp?', soLine)
+      if (!soEnteredTimeStamp instanceof Date) console.log('soLine doesnt have entered timestamp?', soLine)
 
       // NEED TO CALC THE COST
 
