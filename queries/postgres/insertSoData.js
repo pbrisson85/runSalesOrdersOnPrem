@@ -112,16 +112,6 @@ const insertSoData = async data => {
       const creditStatusDesc = soLine.creditStatus.TABLE_DESC
       const logisticsStatus = soLine.header.SHIP_METHOD
       const soEnteredDate = new Date(soLine.header.DOCUMENT_DATE)
-      const soEnteredTime = soLine.header.TIME_CREATED.toString()
-      const hours = parseInt(soEnteredTime.split('.')[0])
-      const minutes = (parseInt(soEnteredTime.split('.')[1]) / 10) * 60
-      let soEnteredTimeStamp = addHours(soEnteredDate, hours)
-      soEnteredTimeStamp = addMinutes(soEnteredTimeStamp, minutes)
-
-      console.log('soNum', soNum)
-      console.log('soEnteredDate', soEnteredDate)
-      console.log('soEnteredTime', soEnteredTime)
-      console.log('soEnteredTimeStamp', soEnteredTimeStamp)
 
       // NEED TO CALC THE COST
 
@@ -211,7 +201,7 @@ const insertSoData = async data => {
             country === 'USA' || country === 'CANADA' || country === 'CAN' ? 'NORTH AMERICA' : 'INTERNATIONAL',
             creditStatusDesc,
             logisticsStatus,
-            soEnteredTimeStamp,
+            soEnteredDate,
           ]
         )
       )
