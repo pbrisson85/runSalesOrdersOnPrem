@@ -114,7 +114,7 @@ const insertSoData = async data => {
       const soEnteredTime = soLine.header.TIME_CREATED
       const soEnteredTimeStamp = addHours(soEnteredDate, soEnteredTime)
 
-      console.log('soCreatedDate', soCreatedDate)
+      console.log('soEnteredDate', soEnteredDate)
       console.log('soEnteredTime', soEnteredTime)
       console.log('soEnteredTimeStamp', soEnteredTimeStamp)
 
