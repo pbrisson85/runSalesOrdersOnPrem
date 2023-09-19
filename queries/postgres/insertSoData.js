@@ -114,7 +114,7 @@ const insertSoData = async data => {
       const soEnteredDate = new Date(soLine.header.DOCUMENT_DATE)
       const soEnteredTime = soLine.header.TIME_CREATED.toString()
       const hours = parseInt(soEnteredTime.split('.')[0])
-      const minutes = parseInt(soEnteredTime.split('.')[1])
+      const minutes = (parseInt(soEnteredTime.split('.')[1]) / 10) * 60
       let soEnteredTimeStamp = addHours(soEnteredDate, hours)
       soEnteredTimeStamp = addMinutes(soEnteredTimeStamp, minutes)
 
