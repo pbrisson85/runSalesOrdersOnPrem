@@ -108,9 +108,8 @@ const insertSoData = async data => {
       const gross_margin_untagged = untaggedWeight * gross_margin_untagged_lb
       const cost_ext_tagged = taggedWeight * aveTaggedCost
       const cost_ext_untagged = untaggedWeight * aveUntaggedCost
-
       const creditStatusDesc = soLine.creditStatus.TABLE_DESC
-      const logisticsStatus = soLine.shipMethod.TABLE_DESC
+      const logisticsStatus = !soLine.shipMethod ? null : soLine.shipMethod.TABLE_DESC
       //const soEnteredDate = new Date(soLine.header.DOCUMENT_DATE) // Doesnt give the timezone offset
       let soEnteredDate = soLine.header.DOCUMENT_DATE.split('-') // result: [yyyy,m,d]
       soEnteredDate = new Date(soEnteredDate[0], soEnteredDate[1] - 1, soEnteredDate[2], 0, 0, 0, 0) // for some reason if I dont instantiate the date this way I dont get the timezone offset

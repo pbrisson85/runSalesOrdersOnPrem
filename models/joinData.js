@@ -33,13 +33,7 @@ const joinData = (
       typeof shipToFile_unflat[`${cust_code}-${shipto_code}`] === 'undefined' ? null : shipToFile_unflat[`${cust_code}-${shipto_code}`][0]
     const customerMaster = customerMaster_unflat[cust_code][0]
     const creditStatus = genTblCreditStatus_unflat[header.CREDIT_STATUS_FLAG][0]
-
-    console.log('ship method: ', header.SHIP_METHOD)
-    console.log('!header.SHIP_METHOD: ', !header.SHIP_METHOD)
-    console.log(`typeof header.SHIP_METHOD === 'undefined'`, typeof header.SHIP_METHOD === 'undefined')
-    console.log(`header.SHIP_METHOD === ''`, header.SHIP_METHOD === '')
-
-    const shipMethod = genTblShipMethod_unflat[header.SHIP_METHOD][0]
+    const shipMethod = !header.SHIP_METHOD ? null : genTblShipMethod_unflat[header.SHIP_METHOD][0]
 
     return {
       header,
