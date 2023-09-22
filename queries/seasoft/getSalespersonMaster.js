@@ -1,7 +1,12 @@
 const { createConnection } = require('../../database/seasoftODBC')
+const { setFlag, getFlag } = require('../../queries/postgres/flags')
+const logEvent = require('../../queries/postgres/logging')
 
 const getSalespersonMaster = async () => {
   try {
+    const errState = await getFlag('odbcErrorState')
+    if (errState) return []
+
     const odbcConn = await createConnection()
 
     console.log(`query ODBC for General Table OTHP ...`)
@@ -20,6 +25,15 @@ const getSalespersonMaster = async () => {
     return data
   } catch (error) {
     console.error(error)
+
+    setFlag('odbcErrorState', true) // set flag to prevent further requests
+
+    await logEvent({
+      event_type: 'error',
+      funct: 'getSalespersonMaster',
+      reason: error.message,
+      note: 'flip odbcErrorState flag',
+    })
   }
 }
 
