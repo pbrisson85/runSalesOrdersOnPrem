@@ -20,14 +20,15 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
       const { lot, loc, lbs, qty, so_num, soLine } = catchWeightLines[key]
       const item = salesOrderLines_unflat[`${so_num}-${soLine}`][0].ITEM_NUMBER
 
+      // Note added LIKE to item because seasoft ODBC cannot handle this query. There is some bug in the driver that cannot select the item, lot, location together is some random circumtances. It can seem to handle it if one of these is LIKE instead of =. Using LIKE on item number is safest because all item numbers are the same length.
       const queryString = `
         SELECT {fn RTRIM("Inventory Location File".ITEM_NUMBER)} AS ITEM_NUMBER, {fn RTRIM("Inventory Location File".LOCATION)} AS LOCATION, {fn RTRIM("Inventory Location File".LOT_NUMBER_OR_SIZE)} AS LOT, "Inventory Location File".LAST_COST 
       
         FROM 'Inventory Location File' 
         
-        WHERE "Inventory Location File".ON_HAND_IN_UM <> 0 AND "Inventory Location File".LOCATION = ? AND "Inventory Location File".LOT_NUMBER_OR_SIZE = ? AND "Inventory Location File".ITEM_NUMBER = ?` //prettier-ignore
+        WHERE "Inventory Location File".ON_HAND_IN_UM <> 0 AND "Inventory Location File".LOCATION = ? AND "Inventory Location File".LOT_NUMBER_OR_SIZE = ? AND "Inventory Location File".ITEM_NUMBER LIKE ?` //prettier-ignore
 
-      let response = await odbcConn.query(queryString, [loc, lot, item])
+      let response = await odbcConn.query(queryString, [loc, lot, `${item}%`])
 
       if (typeof response[0] === 'undefined') {
         const queryString = `
