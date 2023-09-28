@@ -56,7 +56,7 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
             event_type: 'error',
             funct: 'getLotCosts',
             reason: 'No inventory found - Alternative worked',
-            note: `No inventory found for item: ${item}, lot: ${lot}, loc: ${loc}. Tried alternative query with LIKE % and this worked`,
+            note: `No inventory found for sales order: ${so_num}, line: ${soLine}, item: ${item}, lot: ${lot}, loc: ${loc}. Tried alternative query with LIKE % and this worked`,
           })
         }
       }
