@@ -9,7 +9,7 @@ const runShipToTests = async () => {
   let errors = []
 
   // state should never be blank wih a USA ship to
-  console.log('query for blank state')
+  console.log('query postgres for blank state')
   const blankState = await pool.query(`
     SELECT so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     FROM "salesReporting".sales_orders AS so
@@ -24,7 +24,7 @@ const runShipToTests = async () => {
   }
 
   // country should never be blank
-  console.log('query for blank country')
+  console.log('query postgres for blank country')
   const blankCountry = await pool.query(`
     SELECT so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     FROM "salesReporting".sales_orders AS so
@@ -39,7 +39,7 @@ const runShipToTests = async () => {
   }
 
   // state should always read 'OUTSIDE USA' with a non USA ship to
-  console.log('query for outside usa state')
+  console.log('query postgres for outside usa state')
   const outSideUsaState = await pool.query(`
     SELECT so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     FROM "salesReporting".sales_orders AS so
@@ -56,7 +56,7 @@ const runShipToTests = async () => {
   }
 
   // state should never say 'OUTSIDE USA' with a USA ship to
-  console.log('query for outside usa country')
+  console.log('query postgres for outside usa country')
   const outSideUsaCountry = await pool.query(`
     SELECT so.customer_code, so.customer_name, so.ship_to_code, so.address_source
     FROM "salesReporting".sales_orders AS so
