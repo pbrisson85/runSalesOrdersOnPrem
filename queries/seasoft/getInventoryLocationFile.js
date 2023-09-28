@@ -26,9 +26,9 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
       
         FROM 'Inventory Location File' 
         
-        WHERE "Inventory Location File".ON_HAND_IN_UM <> 0 AND "Inventory Location File".LOCATION = ? AND "Inventory Location File".LOT_NUMBER_OR_SIZE = ? AND "Inventory Location File".ITEM_NUMBER LIKE ?` //prettier-ignore
+        WHERE "Inventory Location File".ITEM_NUMBER LIKE ? AND "Inventory Location File".ON_HAND_IN_UM <> 0 AND "Inventory Location File".LOCATION = ? AND "Inventory Location File".LOT_NUMBER_OR_SIZE = ?` //prettier-ignore
 
-      let response = await odbcConn.query(queryString, [loc, lot, `${item}%`])
+      let response = await odbcConn.query(queryString, [`${item}%`, loc, lot])
 
       if (typeof response[0] === 'undefined') {
         const queryString = `
