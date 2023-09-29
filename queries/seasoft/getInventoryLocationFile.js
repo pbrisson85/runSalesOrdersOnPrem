@@ -26,9 +26,9 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
       
         FROM 'Inventory Location File' 
         
-        WHERE "Inventory Location File".ITEM_NUMBER LIKE ? AND "Inventory Location File".ON_HAND_IN_UM <> 0 AND "Inventory Location File".LOCATION = ? AND "Inventory Location File".LOT_NUMBER_OR_SIZE = ?` //prettier-ignore
+        WHERE "Inventory Location File".ITEM_NUMBER = ? AND "Inventory Location File".ON_HAND_IN_UM <> 0 AND "Inventory Location File".LOCATION = ? AND "Inventory Location File".LOT_NUMBER_OR_SIZE = ?` //prettier-ignore
 
-      let response = await odbcConn.query(queryString, [`${item}%`, loc, lot])
+      let response = await odbcConn.query(queryString, [item, loc, lot])
 
       if (typeof response[0] === 'undefined') {
         const queryString = `
@@ -52,12 +52,14 @@ const getLotCosts = async (catchWeightLines, salesOrderLines_unflat) => {
             note: `Tried alternative query with LIKE % but still no inventory found`,
           })
         } else {
-          await logEvent({
-            event_type: 'error',
-            funct: 'getLotCosts',
-            reason: 'No inventory found - Alternative worked',
-            note: `No inventory found for sales order: ${so_num}, line: ${soLine}, item: ${item}, lot: ${lot}, loc: ${loc}. Tried alternative query with LIKE % and this worked`,
-          })
+          // Too many log events. Commenting out for now
+          //
+          // await logEvent({
+          //   event_type: 'info',
+          //   funct: 'getLotCosts',
+          //   reason: 'No inventory found - Alternative worked',
+          //   note: `No inventory found for sales order: ${so_num}, line: ${soLine}, item: ${item}, lot: ${lot}, loc: ${loc}. Tried alternative query with LIKE % and this worked`,
+          // })
         }
       }
 
