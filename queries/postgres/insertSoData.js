@@ -48,7 +48,7 @@ const insertSoData = async data => {
       const shipDate = soLine.header.SCHEDULED_SHIP_DATE
       const custPoNumber = soLine.header.CUSTOMER_ORDER_NUMBER
       const outsideSalesRep = soLine.header.OUTSIDE_SALESPERSON_CODE
-      const outsideSalesRepName = soLine.salesPerson.NAME
+      const outsideSalesRepName = soLine.salesPerson?.NAME ?? null
       const insideSalesRep = soLine.header.INSIDE_SALESPERSON_CODE
       const truckRoute = soLine.header.TRUCK_ROUTE
       const enteredBy = soLine.header.ENTERED_BY_CODE
