@@ -28,7 +28,7 @@ const joinData = (
       timeZone: 'America/New_York',
     })
     const period = mappedPeriods[shipDate]
-    const salesPerson = salespersonMaster_unflat[header.OUTSIDE_SALESPERSON_CODE][0]
+    const salesPerson = salespersonMaster_unflat[header.OUTSIDE_SALESPERSON_CODE]?.[0] ?? null
     const shipToFile =
       typeof shipToFile_unflat[`${cust_code}-${shipto_code}`] === 'undefined' ? null : shipToFile_unflat[`${cust_code}-${shipto_code}`][0]
     const customerMaster = customerMaster_unflat[cust_code][0]
